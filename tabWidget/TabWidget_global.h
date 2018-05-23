@@ -1,0 +1,12 @@
+#ifndef TABWIDGET_GLOBAL_H
+#define TABWIDGET_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(TABWIDGET_LIBRARY)
+#  define TABWIDGETSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define TABWIDGETSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // TABWIDGET_GLOBAL_H
