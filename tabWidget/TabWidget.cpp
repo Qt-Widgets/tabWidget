@@ -1,7 +1,7 @@
 #include "TabWidget.h"
 #include <QDebug>
 
-TabWidget::TabWidget ( QWidget *parent ) : QTabWidget ( parent ) {
+TabWidget::TabWidget ( bool collapsible, bool animated, QWidget *parent ) : QTabWidget ( parent ) {
 
   // TODO: Por si desaparece el cornerWidget
   // https://stackoverflow.com/questions/18144626/qtabwidget-corner-qtoolbutton-widget-disappearing
@@ -13,23 +13,30 @@ TabWidget::TabWidget ( QWidget *parent ) : QTabWidget ( parent ) {
   //
   // https://code.woboq.org/qt5/qtbase/src/widgets/widgets/qtabwidget.cpp.html
   // https://code.woboq.org/qt5/qtbase/src/widgets/widgets/qtabwidget.h.html
-  this->timerId = 0;
+
+  this->setCollapsible ( collapsible );
+  this->setAnimated ( animated );
+
+  //this->timerId = 0;
   this->setMinimumHeight ( 0 );
-  this->setSizePolicy ( QSizePolicy::Expanding, QSizePolicy::Expanding );
-  this->previousIndex = 0;
-  this->openTabWidget = true;
-  this->setCurrentIndex ( 0 );
-  this->cornerActionsContainer = new TabWidgetCorner ( this );
-  this->setCornerWidget ( this->cornerActionsContainer, Qt::TopRightCorner );
+  //this->setSizePolicy ( QSizePolicy::Expanding, QSizePolicy::Expanding );
+  //this->previousIndex = 0;
+  //this->openTabWidget = true;
+  //this->setCurrentIndex ( 0 );
+  this->corner = new TabWidgetCorner ( this );
+  this->setCornerWidget ( this->corner, Qt::TopRightCorner );
+
+
+  //this->setCornerWidget ( new TabWidgetCorner ( this ), Qt::TopLeftCorner );
 
   // allows the entire widget to expand or contract with its content
-  this->toggleAnimation = new QParallelAnimationGroup ( this );
-  this->toggleAnimation->addAnimation ( new QPropertyAnimation ( this, "minimumHeight" ) );
-  this->toggleAnimation->addAnimation ( new QPropertyAnimation ( this, "maximumHeight" ) );
+  //this->toggleAnimation = new QParallelAnimationGroup ( this );
+  //this->toggleAnimation->addAnimation ( new QPropertyAnimation ( this, "minimumHeight" ) );
+  //this->toggleAnimation->addAnimation ( new QPropertyAnimation ( this, "maximumHeight" ) );
 
-  connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( setCurrentIndex ( int ) ) );
-  connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( launchAnimation () ) );
-}
+  //connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( setCurrentIndex ( int ) ) );
+  //connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( launchAnimation () ) );
+}/*
 
 bool TabWidget::getLockedTabWidget () const {
 
@@ -94,14 +101,53 @@ int TabWidget::getPreviousHeight () const {
 void TabWidget::setPreviousHeight ( int value ) {
 
   this->previousHeight = value;
+}*/
+
+bool TabWidget::isAnimated () const {
+
+  return this->animated;
+}
+
+bool TabWidget::isCollapsible () const {
+
+  return this->collapsible;
+}
+
+bool TabWidget::isFloating () const {
+
+  return this->floating;
+}
+
+void TabWidget::setAnimated ( bool value ) {
+
+  this->animated = value;
+  // TODO: Aquí activar/desactivar la animación.
+}
+
+void TabWidget::setCollapsible ( bool value ) {
+
+  this->collapsible = value;
+  // TODO: Aquí activar/desactivar la contracción de las pestañas.
+}
+
+void TabWidget::setCornerPosition ( QTabWidget::TabPosition cornerPosition ) {
+
+  // TODO: Aquí obtener la esquina y reasignarla a la nueva posición indicada
+  this->setCornerWidget ( this->corner, cornerPosition );
+}
+
+void TabWidget::setFloating ( bool value ) {
+
+  this->floating = value;
 }
 
 void TabWidget::setTabPosition ( QTabWidget::TabPosition tabPosition ) {
 
   QTabWidget::setTabPosition ( tabPosition );
-  this->cornerActionsContainer->updateArrowType ();
+  this->corner->updateArrowDirection ();
 }
 
+/*
 void TabWidget::timerEvent ( QTimerEvent *timerEvent ) {
 
   qDebug () << "Entró por la línea 107";
@@ -186,7 +232,7 @@ void TabWidget::timerEvent ( QTimerEvent *timerEvent ) {
          * entró por el norte línea 114
          * La animación está detenida
          * this->previousHeight 163
-         */
+         *//*
         this->setAnimation ();
         this->setMinimumHeight ( 0 );
         this->setMaximumHeight ( 16777215 );
@@ -365,7 +411,7 @@ void TabWidget::setAnimation () {
     default:
       break;
   }*/
-
+/*
   for ( int i = 0; i < toggleAnimation->animationCount () - 1; ++i ) {
 
     QPropertyAnimation *SectionAnimation = static_cast<QPropertyAnimation *> ( this->toggleAnimation->animationAt ( i ) );
@@ -393,4 +439,4 @@ void TabWidget::setLockedTabWidget ( bool value ) {
 void TabWidget::setOpenTabWidget ( bool value ) {
 
   this->openTabWidget = value;
-}
+}*/

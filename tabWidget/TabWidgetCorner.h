@@ -21,7 +21,9 @@ class TabWidgetCorner : public QWidget {
 
   public:
     explicit TabWidgetCorner ( QWidget *parent = 0 );
-    void updateArrowType ();
+
+    void addAction ( QAction *action );
+    void updateArrowDirection ();
 
   public slots:
     void toggleShowHideTabWidgetBtn ( bool checked );

@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 // Librerías Externas
-#include "CollapsibleTabWidget.h"
+#include "TabWidget.h"
 
 // Librerías Qt
 #include <QMainWindow>

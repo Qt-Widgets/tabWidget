@@ -23,15 +23,16 @@ TabWidgetCorner::TabWidgetCorner ( QWidget *parent ) : QWidget ( parent ) {
   this->mainLayout->addWidget ( this->showHideTabWidgetBtn );
   this->setLayout ( this->mainLayout );
   connect ( this->showHideTabWidgetBtn, SIGNAL ( toggled ( bool ) ), this, SLOT ( toggleShowHideTabWidgetBtn ( bool ) ) );
-  this->updateArrowType ();
+  this->updateArrowDirection ();
 }
 
-void TabWidgetCorner::updateArrowType () {
+void TabWidgetCorner::updateArrowDirection () {
 
   switch ( ( ( QTabWidget * ) this->parentWidget () )->tabPosition () ) {
 
     case QTabWidget::North: {
 
+      qDebug () << "Está entrando por el norte";
       QWidget *corner = ( ( QTabWidget * ) this->parentWidget () )->cornerWidget ( Qt::TopRightCorner );
       if ( corner ) {
 
@@ -45,6 +46,7 @@ void TabWidgetCorner::updateArrowType () {
     }
     case QTabWidget::South: {
 
+      qDebug () << "Está entrando por el sur";
       QWidget *corner = ( ( QTabWidget * ) this->parentWidget () )->cornerWidget ( Qt::TopRightCorner );
       if ( corner ) {
 
@@ -58,16 +60,28 @@ void TabWidgetCorner::updateArrowType () {
     }
     case QTabWidget::East:
 
+      qDebug () << "Está entrando por el este";
       this->showHideTabWidgetBtn->setArrowType ( this->showHideTabWidgetBtn->isChecked () ? Qt::ArrowType::LeftArrow : Qt::ArrowType::DownArrow );
       break;
 
     case QTabWidget::West:
 
+      qDebug () << "Está entrando por el oeste";
       this->showHideTabWidgetBtn->setArrowType ( this->showHideTabWidgetBtn->isChecked () ? Qt::ArrowType::LeftArrow : Qt::ArrowType::DownArrow );
       break;
 
     default:
 
+      qDebug () << "Está entrando por el predeterminado";
+      QWidget *corner = ( ( QTabWidget * ) this->parentWidget () )->cornerWidget ( Qt::TopRightCorner );
+      if ( corner ) {
+
+        this->showHideTabWidgetBtn->setArrowType ( this->showHideTabWidgetBtn->isChecked () ? Qt::ArrowType::LeftArrow : Qt::ArrowType::DownArrow );
+
+      } else {
+
+        this->showHideTabWidgetBtn->setArrowType ( this->showHideTabWidgetBtn->isChecked () ? Qt::ArrowType::RightArrow : Qt::ArrowType::DownArrow );
+      }
       break;
   }
   this->showHideTabWidgetBtn->setToolTip ( this->showHideTabWidgetBtn->isChecked () ? "Uncollapse" : "Collapse" );
@@ -75,15 +89,15 @@ void TabWidgetCorner::updateArrowType () {
 
 void TabWidgetCorner::toggleShowHideTabWidgetBtn ( bool checked ) {
 
-  this->updateArrowType ();
+  this->updateArrowDirection ();
 
   //qDebug () << ( ( CollapsibleTabWidget * ) this->parent () )->getOpenTabWidget ();
   //if ( ( ( ( CollapsibleTabWidget * ) this->parent () )->getOpenTabWidget () ) && !( ( ( CollapsibleTabWidget * ) this->parent () )->getLockedTabWidget () ) ) {
 
-  QParallelAnimationGroup *toggleAnimation = ( ( TabWidget * ) this->parent () )->getToggleAnimation ();
+  /*QParallelAnimationGroup *toggleAnimation = ( ( TabWidget * ) this->parent () )->getToggleAnimation ();
   toggleAnimation->setDirection ( checked ? QAbstractAnimation::Forward : QAbstractAnimation::Backward );
   toggleAnimation->start ();
   ( ( TabWidget * ) this->parent () )->setLockedTabWidget ( checked );
-  ( ( TabWidget * ) this->parent () )->setOpenTabWidget ( !checked );
+  ( ( TabWidget * ) this->parent () )->setOpenTabWidget ( !checked );*/
   //}
 }
