@@ -3,9 +3,11 @@
 
 // Librerías Internas
 #include "TabWidget_global.h"
+#include "ShowHideTabAct.h"
 #include "Corner.h"
 
 // Librerías Qt
+#include <QAction>
 /*#include <QFlags>
 #include <QFocusEvent>
 #include <QHBoxLayout>
@@ -71,10 +73,6 @@ namespace Com {
               void setTabPosition ( QTabWidget::TabPosition tabPosition );
               //void timerEvent ( QTimerEvent *timerEvent ) Q_DECL_OVERRIDE;
 
-
-
-
-
             protected:
               //void resizeEvent ( QResizeEvent *event ) Q_DECL_OVERRIDE;
 
@@ -95,6 +93,7 @@ namespace Com {
               bool animated = false;
               bool floating = false;
               TabWidget::CornerPosition indicatorPosition = TabWidget::Right;
+              ShowHideTabAct showHideAct = nullptr;
           };
         }
       }

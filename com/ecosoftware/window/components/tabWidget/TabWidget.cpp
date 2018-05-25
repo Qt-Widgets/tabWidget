@@ -16,13 +16,13 @@ TabWidget::TabWidget ( bool collapsible, bool animated, QWidget *parent ) : QTab
   // https://code.woboq.org/qt5/qtbase/src/widgets/widgets/qtabwidget.cpp.html
   // https://code.woboq.org/qt5/qtbase/src/widgets/widgets/qtabwidget.h.html
 
-  this->setCollapsible ( collapsible );
-  this->setAnimated ( animated );
-  this->setMinimumHeight ( 0 );
   this->cornerLeft = new Corner ( this );
   this->setCornerWidget ( this->cornerLeft, Qt::TopLeftCorner );
   this->cornerRight = new Corner ( this );
   this->setCornerWidget ( this->cornerRight, Qt::TopRightCorner );
+  this->setCollapsible ( collapsible );
+  this->setAnimated ( animated );
+  this->setMinimumHeight ( 0 );
 
   //this->timerId = 0;
   //this->setSizePolicy ( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -104,6 +104,11 @@ void TabWidget::setPreviousHeight ( int value ) {
   this->previousHeight = value;
 }*/
 
+QTabWidget::TabPosition TabWidget::getIndicatorPosition () const {
+
+  return this->indicatorPosition;
+}
+
 bool TabWidget::isAnimated () const {
 
   return this->animated;
@@ -130,7 +135,35 @@ void TabWidget::setCollapsible ( bool value ) {
   this->collapsible = value;
   // TODO: Aquí activar/desactivar la contracción de las pestañas.
   // TODO: Inicialmente se asigna el indicador del lado derecho.
+
+  // if ( ( this->collapsible ) && ( this->showHideAct = nullptr ) )
+  if ( this->collapsible ) {
+
+    if ( this->showHideAct == nullptr ) {
+
+      // TODO: Crear la acción.
+      this->collapsible = new ShowHideTabAct ( "", this );
+
+    } else {
+
+      // TODO: Lanzar el setIndicatorPosition
+      // Quiere decir que se ha removido de las esquinas y está oculto, validar que sea así.
+    }
+  } else {
+
+    if ( this->showHideAct != nullptr ) {
+
+      // TODO: Buscarlo y ocultarlo y quitarlo de la esquina donde se encuentre ubicado.
+    }
+  }
+
+
   this->setIndicatorPosition ( TabWidget::Right );
+}
+
+void TabWidget::setFloating ( bool value ) {
+
+  this->floating = value;
 }
 
 void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
@@ -176,20 +209,10 @@ void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
   //this->setCornerWidget ( this->corner, cornerPosition );
 }
 
-void TabWidget::setFloating ( bool value ) {
-
-  this->floating = value;
-}
-
 void TabWidget::setTabPosition ( QTabWidget::TabPosition tabPosition ) {
 
   QTabWidget::setTabPosition ( tabPosition );
   //this->corner->updateArrowDirection ();
-}
-
-QTabWidget::TabPosition TabWidget::getIndicatorPosition () const {
-
-  return this->indicatorPosition;
 }
 
 /*

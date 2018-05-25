@@ -5,14 +5,14 @@
 #include "TabWidget.h"
 
 // Librerías Qt
-#include <QAbstractAnimation>
-#include <QAction>
+/*#include <QAbstractAnimation>
+#include <QAction>*/
 #include <QHBoxLayout>
-#include <QMainWindow>
+/*#include <QMainWindow>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
 #include <QTabWidget>
-#include <QToolButton>
+#include <QToolButton>*/
 #include <QWidget>
 
 namespace Com {

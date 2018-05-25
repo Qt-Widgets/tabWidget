@@ -103,3 +103,8 @@ void Corner::toggleShowHideTabWidgetBtn ( bool checked ) {
   ( ( TabWidget * ) this->parent () )->setOpenTabWidget ( !checked );*/
   //}
 }
+
+void TabWidget::Corner::addAction ( QAction *action ) {
+
+
+}

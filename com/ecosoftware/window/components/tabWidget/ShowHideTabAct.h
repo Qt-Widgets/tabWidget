@@ -1,5 +1,5 @@
-#ifndef COLLAPSIBLETABACT_H
-#define COLLAPSIBLETABACT_H
+#ifndef SHOWHIDETABACT_H
+#define SHOWHIDETABACT_H
 
 // Librerías Internas
 #include "TabWidget_global.h"
@@ -17,12 +17,12 @@ namespace Com {
 
         namespace TabWidget {
 
-          class TABWIDGETSHARED_EXPORT CollapsibleTabAct : public Actions::ActionAbs {
+          class TABWIDGETSHARED_EXPORT ShowHideTabAct : public Actions::ActionAbs {
 
               Q_OBJECT
 
             public:
-              Q_INVOKABLE CollapsibleTabAct ( QString title, QWidget *parent );
+              Q_INVOKABLE ShowHideTabAct ( QString title, QWidget *parent );
 
             public slots:
               void execAct ();
@@ -33,4 +33,4 @@ namespace Com {
   }
 }
 
-#endif // COLLAPSIBLETABACT_H
+#endif // SHOWHIDETABACT_H
