@@ -141,32 +141,36 @@ void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
   }
   this->indicatorPosition = cornerPosition;
 
-  //Qt::TopRightCorner
   switch ( cornerPosition ) {
 
     case TabWidget::Top: {
 
-      this->setCornerWidget ( this->corner, cornerPosition );
+      // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
+      //this->setCornerWidget ( this->corner, cornerPosition );
       break;
     }
     case TabWidget::Bottom: {
 
-      this->setCornerWidget ( this->corner, cornerPosition );
+      // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
+      //this->setCornerWidget ( this->corner, cornerPosition );
       break;
     }
     case TabWidget::Left:
 
-      this->setCornerWidget ( this->corner, cornerPosition );
+      // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
+      //this->setCornerWidget ( this->corner, cornerPosition );
       break;
 
     case TabWidget::Right:
 
-      this->setCornerWidget ( this->corner, cornerPosition );
+      // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
+      //this->setCornerWidget ( this->corner, cornerPosition );
       break;
 
     default:
 
-      this->setCornerWidget ( this->corner, cornerPosition );
+      // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
+      //this->setCornerWidget ( this->corner, cornerPosition );
       break;
   }
   //this->setCornerWidget ( this->corner, cornerPosition );

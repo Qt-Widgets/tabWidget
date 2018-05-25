@@ -94,7 +94,7 @@ namespace Com {
               bool collapsible = false;
               bool animated = false;
               bool floating = false;
-              TabWidget::CornerPosition indicatorPosition;
+              TabWidget::CornerPosition indicatorPosition = TabWidget::Right;
           };
         }
       }
