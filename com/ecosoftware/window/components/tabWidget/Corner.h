@@ -2,17 +2,18 @@
 #define CORNER_H
 
 // Librerias Internas
-#include "TabWidget.h"
+#include "TabWidget_global.h"
+//#include "TabWidget.h"
 
 // Librerías Qt
-/*#include <QAbstractAnimation>
-#include <QAction>*/
+/*#include <QAbstractAnimation>*/
+#include <QAction>
 #include <QHBoxLayout>
 /*#include <QMainWindow>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
-#include <QTabWidget>
-#include <QToolButton>*/
+#include <QTabWidget>*/
+#include <QToolButton>
 #include <QWidget>
 
 namespace Com {
@@ -25,7 +26,7 @@ namespace Com {
 
         namespace TabWidget {
 
-          class Corner : public QWidget {
+          class TABWIDGETSHARED_EXPORT Corner : public QWidget {
 
               Q_OBJECT
 

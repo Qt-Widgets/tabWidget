@@ -104,7 +104,7 @@ void TabWidget::setPreviousHeight ( int value ) {
   this->previousHeight = value;
 }*/
 
-QTabWidget::TabPosition TabWidget::getIndicatorPosition () const {
+TabWidget::CornerPosition TabWidget::getIndicatorPosition () const {
 
   return this->indicatorPosition;
 }
@@ -139,26 +139,27 @@ void TabWidget::setCollapsible ( bool value ) {
   // if ( ( this->collapsible ) && ( this->showHideAct = nullptr ) )
   if ( this->collapsible ) {
 
-    if ( this->showHideAct == nullptr ) {
+    if ( this->showHideTabAct == nullptr ) {
 
       // TODO: Crear la acción.
-      this->collapsible = new ShowHideTabAct ( "", this );
+      this->showHideTabAct = new ShowHideTabAct ( "", this );
+      qDebug () << "Está creando la acción";
 
     } else {
 
       // TODO: Lanzar el setIndicatorPosition
       // Quiere decir que se ha removido de las esquinas y está oculto, validar que sea así.
     }
+    //this->setIndicatorPosition ( TabWidget::Left );
+    this->setIndicatorPosition ( TabWidget::Right );
+
   } else {
 
-    if ( this->showHideAct != nullptr ) {
+    if ( this->showHideTabAct != nullptr ) {
 
       // TODO: Buscarlo y ocultarlo y quitarlo de la esquina donde se encuentre ubicado.
     }
   }
-
-
-  this->setIndicatorPosition ( TabWidget::Right );
 }
 
 void TabWidget::setFloating ( bool value ) {
@@ -168,6 +169,7 @@ void TabWidget::setFloating ( bool value ) {
 
 void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
 
+  qDebug () << "Está entrando al setIndicatorPosition";
   if ( this->indicatorPosition != cornerPosition ) {
 
     // TODO: Aquí obtener la acción indicadora expandir/contraer y reasignarla a la nueva posición indicada
@@ -198,6 +200,7 @@ void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
 
       // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
       //this->setCornerWidget ( this->corner, cornerPosition );
+      this->cornerRight->addAction ( this->showHideTabAct );
       break;
 
     default:

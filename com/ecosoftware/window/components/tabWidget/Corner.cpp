@@ -30,7 +30,7 @@ Corner::Corner ( QWidget *parent ) : QWidget ( parent ) {
 
 void Corner::updateArrowDirection () {
 
-  switch ( ( ( QTabWidget * ) this->parentWidget () )->tabPosition () ) {
+  /*switch ( ( ( QTabWidget * ) this->parentWidget () )->tabPosition () ) {
 
     case QTabWidget::North: {
 
@@ -86,7 +86,7 @@ void Corner::updateArrowDirection () {
       }
       break;
   }
-  this->showHideTabWidgetBtn->setToolTip ( this->showHideTabWidgetBtn->isChecked () ? "Uncollapse" : "Collapse" );
+  this->showHideTabWidgetBtn->setToolTip ( this->showHideTabWidgetBtn->isChecked () ? "Uncollapse" : "Collapse" );*/
 }
 
 void Corner::toggleShowHideTabWidgetBtn ( bool checked ) {
@@ -104,7 +104,21 @@ void Corner::toggleShowHideTabWidgetBtn ( bool checked ) {
   //}
 }
 
-void TabWidget::Corner::addAction ( QAction *action ) {
+void Corner::Corner::addAction ( QAction *action ) {
 
-
+  qDebug () << "Está entrando al addAction";
+  QToolButton *toolBtn = new QToolButton ( this );
+  toolBtn->addAction ( action );
+  toolBtn->setObjectName ( action->objectName () + "Btn" );
+  toolBtn->setSizePolicy ( QSizePolicy::Maximum, QSizePolicy::Maximum );
+  toolBtn->setStyleSheet ( "QToolButton {border: none;}" );
+  toolBtn->setToolButtonStyle ( Qt::ToolButtonIconOnly );
+  //this->showHideTabWidgetBtn->setArrowType ( Qt::ArrowType::DownArrow );
+  toolBtn->setToolTip ( action->toolTip () );
+  toolBtn->setToolTipDuration ( 5000 );
+  toolBtn->setCheckable ( true );
+  toolBtn->setChecked ( false );
+  toolBtn->setMinimumSize ( 16, 16 );
+  qDebug () << "Está saliendo del addAction";
+  this->mainLayout->addWidget ( toolBtn );
 }

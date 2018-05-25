@@ -34,14 +34,19 @@ SOURCES = \
 DESTDIR = ../
 
 win32:CONFIG(release, debug|release): LIBS += \
+  -L$$OUT_PWD/../../com/ecosoftware/window/components/ -lactions \
   -L$$OUT_PWD/../../com/ecosoftware/window/components/ -lTabWidget
 else:win32:CONFIG(debug, debug|release): LIBS += \
+  -L$$OUT_PWD/../../com/ecosoftware/window/components/ -lactions \
   -L$$OUT_PWD/../../com/ecosoftware/window/components/ -lTabWidget
 else:unix: LIBS += \
+  -L$$OUT_PWD/../../com/ecosoftware/window/components/ -lactions \
   -L$$OUT_PWD/../../com/ecosoftware/window/components/ -lTabWidget
 
 INCLUDEPATH += \
+  $$PWD/../../com/ecosoftware/window/components/actions \
   $$PWD/../../com/ecosoftware/window/components/tabWidget
 
 DEPENDPATH += \
+  $$PWD/../../com/ecosoftware/window/components/actions \
   $$PWD/../../com/ecosoftware/window/components/tabWidget

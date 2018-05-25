@@ -62,7 +62,7 @@ namespace Com {
     void setOpenTabWidget ( bool value );
     void setPreviousHeight ( int value );*/
 
-              QTabWidget::TabPosition getIndicatorPosition () const;
+              TabWidget::CornerPosition getIndicatorPosition () const;
               bool isAnimated () const;
               bool isCollapsible () const;
               bool isFloating () const;
@@ -93,7 +93,7 @@ namespace Com {
               bool animated = false;
               bool floating = false;
               TabWidget::CornerPosition indicatorPosition = TabWidget::Right;
-              ShowHideTabAct showHideAct = nullptr;
+              ShowHideTabAct *showHideTabAct = nullptr;
           };
         }
       }
