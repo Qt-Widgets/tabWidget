@@ -108,17 +108,22 @@ void Corner::Corner::addAction ( QAction *action ) {
 
   qDebug () << "Está entrando al addAction";
   QToolButton *toolBtn = new QToolButton ( this );
-  toolBtn->addAction ( action );
+  toolBtn->setDefaultAction ( action );
   toolBtn->setObjectName ( action->objectName () + "Btn" );
   toolBtn->setSizePolicy ( QSizePolicy::Maximum, QSizePolicy::Maximum );
   toolBtn->setStyleSheet ( "QToolButton {border: none;}" );
   toolBtn->setToolButtonStyle ( Qt::ToolButtonIconOnly );
-  //this->showHideTabWidgetBtn->setArrowType ( Qt::ArrowType::DownArrow );
   toolBtn->setToolTip ( action->toolTip () );
   toolBtn->setToolTipDuration ( 5000 );
   toolBtn->setCheckable ( true );
   toolBtn->setChecked ( false );
   toolBtn->setMinimumSize ( 16, 16 );
+  qDebug () << action->objectName ();
+  if ( action->objectName ().compare ( "Com::Ecosoftware::Window::Components::TabWidget::ShowHideTabAct" ) == 0 ) {
+
+    qDebug () << "Está asignando la flecha";
+    toolBtn->setArrowType ( Qt::ArrowType::DownArrow );
+  }
   qDebug () << "Está saliendo del addAction";
   this->mainLayout->addWidget ( toolBtn );
 }
