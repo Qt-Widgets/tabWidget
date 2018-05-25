@@ -1,12 +1,14 @@
-#include "TabWidgetCorner.h"
+#include "Corner.h"
 #include <QDebug> // FOR DEBUGGING MESSAGES
 
-TabWidgetCorner::TabWidgetCorner ( QWidget *parent ) : QWidget ( parent ) {
+using namespace Com::Ecosoftware::Window::Components::TabWidget;
+
+Corner::Corner ( QWidget *parent ) : QWidget ( parent ) {
 
   this->setContentsMargins ( 0, 0, 0, 0 );
   this->setSizePolicy ( QSizePolicy::Maximum, QSizePolicy::Maximum );
 
-  this->showHideTabWidgetBtn = new QToolButton ( this );
+  /*this->showHideTabWidgetBtn = new QToolButton ( this );
   this->showHideTabWidgetBtn->setObjectName ( "showHideTabWidgetBtn" );
   this->showHideTabWidgetBtn->setSizePolicy ( QSizePolicy::Maximum, QSizePolicy::Maximum );
   this->showHideTabWidgetBtn->setStyleSheet ( "QToolButton {border: none;}" );
@@ -16,17 +18,17 @@ TabWidgetCorner::TabWidgetCorner ( QWidget *parent ) : QWidget ( parent ) {
   this->showHideTabWidgetBtn->setToolTipDuration ( 5000 );
   this->showHideTabWidgetBtn->setCheckable ( true );
   this->showHideTabWidgetBtn->setChecked ( false );
-  this->showHideTabWidgetBtn->setMinimumSize ( 16, 16 );
+  this->showHideTabWidgetBtn->setMinimumSize ( 16, 16 );*/
 
   this->mainLayout = new QHBoxLayout ( this );
-  this->mainLayout->setContentsMargins ( 3, 0, 3, 0 );
-  this->mainLayout->addWidget ( this->showHideTabWidgetBtn );
+  this->mainLayout->setContentsMargins ( 0, 0, 0, 0 );
+  //this->mainLayout->addWidget ( this->showHideTabWidgetBtn );
   this->setLayout ( this->mainLayout );
-  connect ( this->showHideTabWidgetBtn, SIGNAL ( toggled ( bool ) ), this, SLOT ( toggleShowHideTabWidgetBtn ( bool ) ) );
-  this->updateArrowDirection ();
+  //connect ( this->showHideTabWidgetBtn, SIGNAL ( toggled ( bool ) ), this, SLOT ( toggleShowHideTabWidgetBtn ( bool ) ) );
+  //this->updateArrowDirection ();
 }
 
-void TabWidgetCorner::updateArrowDirection () {
+void Corner::updateArrowDirection () {
 
   switch ( ( ( QTabWidget * ) this->parentWidget () )->tabPosition () ) {
 
@@ -87,7 +89,7 @@ void TabWidgetCorner::updateArrowDirection () {
   this->showHideTabWidgetBtn->setToolTip ( this->showHideTabWidgetBtn->isChecked () ? "Uncollapse" : "Collapse" );
 }
 
-void TabWidgetCorner::toggleShowHideTabWidgetBtn ( bool checked ) {
+void Corner::toggleShowHideTabWidgetBtn ( bool checked ) {
 
   this->updateArrowDirection ();
 

@@ -28,19 +28,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
   TabWidget.cpp \
-  TabWidgetCorner.cpp
+    Corner.cpp
 
 HEADERS += \
   TabWidget_global.h \
   TabWidget.h \
-  TabWidgetCorner.h
+    Corner.h
 
 DESTDIR = ../
 
-UI_DIR = ../ui
-MOC_DIR = ../moc
-OBJECTS_DIR = ../obj
-RCC_DIR = ../rcc
+UI_DIR = ../../../../../ui
+MOC_DIR = ../../../../../moc
+OBJECTS_DIR = ../../../../../obj
+RCC_DIR = ../../../../../rcc
 
 unix {
   target.path = /usr/lib

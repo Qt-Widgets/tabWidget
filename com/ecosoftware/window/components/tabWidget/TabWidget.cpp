@@ -1,6 +1,8 @@
 #include "TabWidget.h"
 #include <QDebug>
 
+using namespace Com::Ecosoftware::Window::Components::TabWidget;
+
 TabWidget::TabWidget ( bool collapsible, bool animated, QWidget *parent ) : QTabWidget ( parent ) {
 
   // TODO: Por si desaparece el cornerWidget
@@ -16,18 +18,17 @@ TabWidget::TabWidget ( bool collapsible, bool animated, QWidget *parent ) : QTab
 
   this->setCollapsible ( collapsible );
   this->setAnimated ( animated );
+  this->setMinimumHeight ( 0 );
+  this->cornerLeft = new Corner ( this );
+  this->setCornerWidget ( this->cornerLeft, Qt::TopLeftCorner );
+  this->cornerRight = new Corner ( this );
+  this->setCornerWidget ( this->cornerRight, Qt::TopRightCorner );
 
   //this->timerId = 0;
-  this->setMinimumHeight ( 0 );
   //this->setSizePolicy ( QSizePolicy::Expanding, QSizePolicy::Expanding );
   //this->previousIndex = 0;
   //this->openTabWidget = true;
   //this->setCurrentIndex ( 0 );
-  this->corner = new TabWidgetCorner ( this );
-  this->setCornerWidget ( this->corner, Qt::TopRightCorner );
-
-
-  //this->setCornerWidget ( new TabWidgetCorner ( this ), Qt::TopLeftCorner );
 
   // allows the entire widget to expand or contract with its content
   //this->toggleAnimation = new QParallelAnimationGroup ( this );
@@ -36,9 +37,9 @@ TabWidget::TabWidget ( bool collapsible, bool animated, QWidget *parent ) : QTab
 
   //connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( setCurrentIndex ( int ) ) );
   //connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( launchAnimation () ) );
-}/*
+}
 
-bool TabWidget::getLockedTabWidget () const {
+/*bool TabWidget::getLockedTabWidget () const {
 
   return this->lockedTabWidget;
 }
@@ -128,12 +129,47 @@ void TabWidget::setCollapsible ( bool value ) {
 
   this->collapsible = value;
   // TODO: Aquí activar/desactivar la contracción de las pestañas.
+  // TODO: Inicialmente se asigna el indicador del lado derecho.
+  this->setIndicatorPosition ( TabWidget::Right );
 }
 
-void TabWidget::setCornerPosition ( QTabWidget::TabPosition cornerPosition ) {
+void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
 
-  // TODO: Aquí obtener la esquina y reasignarla a la nueva posición indicada
-  this->setCornerWidget ( this->corner, cornerPosition );
+  if ( this->indicatorPosition != cornerPosition ) {
+
+    // TODO: Aquí obtener la acción indicadora expandir/contraer y reasignarla a la nueva posición indicada
+  }
+  this->indicatorPosition = cornerPosition;
+
+  //Qt::TopRightCorner
+  switch ( cornerPosition ) {
+
+    case TabWidget::Top: {
+
+      this->setCornerWidget ( this->corner, cornerPosition );
+      break;
+    }
+    case TabWidget::Bottom: {
+
+      this->setCornerWidget ( this->corner, cornerPosition );
+      break;
+    }
+    case TabWidget::Left:
+
+      this->setCornerWidget ( this->corner, cornerPosition );
+      break;
+
+    case TabWidget::Right:
+
+      this->setCornerWidget ( this->corner, cornerPosition );
+      break;
+
+    default:
+
+      this->setCornerWidget ( this->corner, cornerPosition );
+      break;
+  }
+  //this->setCornerWidget ( this->corner, cornerPosition );
 }
 
 void TabWidget::setFloating ( bool value ) {
@@ -144,7 +180,12 @@ void TabWidget::setFloating ( bool value ) {
 void TabWidget::setTabPosition ( QTabWidget::TabPosition tabPosition ) {
 
   QTabWidget::setTabPosition ( tabPosition );
-  this->corner->updateArrowDirection ();
+  //this->corner->updateArrowDirection ();
+}
+
+QTabWidget::TabPosition TabWidget::getIndicatorPosition () const {
+
+  return this->indicatorPosition;
 }
 
 /*

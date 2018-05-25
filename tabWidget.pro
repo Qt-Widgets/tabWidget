@@ -7,7 +7,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-  tabWidget \
+  com \
   examples
 
 CONFIG += ordered
