@@ -91,10 +91,10 @@ namespace Com {
     int previousHeight;
     int timerId;
     bool finishedAnimation = false;*/
-              bool collapsible;
-              bool animated;
-              bool floating;
-              QTabWidget::TabPosition indicatorPosition;
+              bool collapsible = false;
+              bool animated = false;
+              bool floating = false;
+              TabWidget::CornerPosition indicatorPosition;
           };
         }
       }

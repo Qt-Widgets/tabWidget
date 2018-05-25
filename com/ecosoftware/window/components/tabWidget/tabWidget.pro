@@ -28,12 +28,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
   TabWidget.cpp \
-    Corner.cpp
+    Corner.cpp \
+    CollapsibleTabAct.cpp
 
 HEADERS += \
   TabWidget_global.h \
   TabWidget.h \
-    Corner.h
+    Corner.h \
+    CollapsibleTabAct.h
 
 DESTDIR = ../
 
@@ -41,6 +43,19 @@ UI_DIR = ../../../../../ui
 MOC_DIR = ../../../../../moc
 OBJECTS_DIR = ../../../../../obj
 RCC_DIR = ../../../../../rcc
+
+win32:CONFIG(release, debug|release): LIBS += \
+  -L$$OUT_PWD/../ -lactions
+else:win32:CONFIG(debug, debug|release): LIBS += \
+  -L$$OUT_PWD/../ -lactions
+else:unix: LIBS += \
+  -L$$OUT_PWD/../ -lactions
+
+INCLUDEPATH += \
+  $$PWD/../actions
+
+DEPENDPATH += \
+  $$PWD/../actions
 
 unix {
   target.path = /usr/lib
