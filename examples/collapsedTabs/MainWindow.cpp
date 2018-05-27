@@ -6,14 +6,16 @@
 MainWindow::MainWindow ( QWidget *parent ) : QMainWindow ( parent ) {
 
   this->resize ( 400, 250 );
-  Com::Ecosoftware::Window::Components::TabWidget::TabWidget *collapsibleTabWidget = new Com::Ecosoftware::Window::Components::TabWidget::TabWidget ( /*this*/ );
+  Com::Ecosoftware::Window::Components::TabWidget::TabWidget *collapsibleTabWidget = new Com::Ecosoftware::Window::Components::TabWidget::TabWidget ( true, false, QTabWidget::North, this/*this*/ );
 
-  collapsibleTabWidget->addTab ( new QWidget ( this ), "Tab 1" );
+  QWidget *prueba = new QWidget ( this );
+  prueba->setStyleSheet ( "background-color: yellow" );
+  collapsibleTabWidget->addTab ( prueba, "Tab 1" );
   collapsibleTabWidget->addTab ( new QWidget ( this ), "Tab 2" );
   collapsibleTabWidget->addTab ( new QWidget ( this ), "Tab 3" );
   collapsibleTabWidget->addTab ( new QWidget ( this ), "Tab 4" );
 
-  collapsibleTabWidget->setTabPosition ( QTabWidget::North );
+  //collapsibleTabWidget->setTabPosition ( QTabWidget::North );
   //collapsibleTabWidget->setTabPosition ( QTabWidget::South );
   //collapsibleTabWidget->setTabPosition ( QTabWidget::East );
   //collapsibleTabWidget->setTabPosition ( QTabWidget::West );

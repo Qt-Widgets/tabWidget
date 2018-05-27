@@ -3,7 +3,7 @@
 
 using namespace Com::Ecosoftware::Window::Components::TabWidget;
 
-TabWidget::TabWidget ( bool collapsible, bool animated, QWidget *parent ) : QTabWidget ( parent ) {
+TabWidget::TabWidget ( bool collapsible, bool animated, TabPosition tabPosition, QWidget *parent ) : QTabWidget ( parent ) {
 
   // TODO: Por si desaparece el cornerWidget
   // https://stackoverflow.com/questions/18144626/qtabwidget-corner-qtoolbutton-widget-disappearing
@@ -16,10 +16,23 @@ TabWidget::TabWidget ( bool collapsible, bool animated, QWidget *parent ) : QTab
   // https://code.woboq.org/qt5/qtbase/src/widgets/widgets/qtabwidget.cpp.html
   // https://code.woboq.org/qt5/qtbase/src/widgets/widgets/qtabwidget.h.html
 
-  this->cornerLeft = new Corner ( this );
-  this->setCornerWidget ( this->cornerLeft, Qt::TopLeftCorner );
-  this->cornerRight = new Corner ( this );
-  this->setCornerWidget ( this->cornerRight, Qt::TopRightCorner );
+  this->setTabPosition ( tabPosition );
+
+  if ( ( tabPosition == QTabWidget::North ) || ( tabPosition == QTabWidget::South ) ) {
+
+    this->cornerTopLeft = new Corner ( QTabWidget::North, this );
+    this->setCornerWidget ( this->cornerTopLeft, Qt::TopLeftCorner );
+    this->cornerBottomRight = new Corner ( QTabWidget::South, this );
+    this->setCornerWidget ( this->cornerBottomRight, Qt::TopRightCorner );
+
+  } else if ( ( tabPosition == QTabWidget::East ) || ( tabPosition == QTabWidget::West ) ) {
+
+    this->cornerTopLeft = new Corner ( QTabWidget::West, this );
+    this->setCornerWidget ( this->cornerTopLeft, Qt::TopLeftCorner );
+    this->cornerBottomRight = new Corner ( QTabWidget::East, this );
+    this->setCornerWidget ( this->cornerBottomRight, Qt::TopRightCorner );
+  }
+  qDebug () << "Terminó de crear las esquinas";
   this->setCollapsible ( collapsible );
   this->setAnimated ( animated );
   this->setMinimumHeight ( 0 );
@@ -37,6 +50,38 @@ TabWidget::TabWidget ( bool collapsible, bool animated, QWidget *parent ) : QTab
 
   //connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( setCurrentIndex ( int ) ) );
   //connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( launchAnimation () ) );
+}
+
+void TabWidget::addAction ( QAction *action, TabWidget::CornerPosition cornerPosition ) {
+
+  qDebug () << "Está entrando por el addAction del TabWidget";
+  switch ( cornerPosition ) {
+
+    case TabWidget::Top:
+
+      this->cornerTopLeft->addAction ( action );
+      break;
+
+    case TabWidget::Bottom:
+
+      this->cornerBottomRight->addAction ( action );
+      break;
+
+    case TabWidget::Left:
+
+      this->cornerTopLeft->addAction ( action );
+      break;
+
+    case TabWidget::Right:
+
+      this->cornerBottomRight->addAction ( action );
+      break;
+
+    default:
+
+      this->cornerBottomRight->addAction ( action );
+      break;
+  }
 }
 
 /*bool TabWidget::getLockedTabWidget () const {
@@ -135,14 +180,15 @@ void TabWidget::setCollapsible ( bool value ) {
   this->collapsible = value;
   // TODO: Aquí activar/desactivar la contracción de las pestañas.
   // TODO: Inicialmente se asigna el indicador del lado derecho.
-
+  qDebug () << "Está entrando por el setCollapsible";
   // if ( ( this->collapsible ) && ( this->showHideAct = nullptr ) )
   if ( this->collapsible ) {
 
     if ( this->showHideTabAct == nullptr ) {
 
       // TODO: Crear la acción.
-      this->showHideTabAct = new ShowHideTabAct ( "", this );
+      this->showHideTabAct = new ShowHideTabAct ( "Collapse", this );
+      connect ( this->showHideTabAct, SIGNAL ( triggered ( bool ) ), this, SLOT ( collapse ( bool ) ) );
       qDebug () << "Está creando la acción";
 
     } else {
@@ -200,7 +246,7 @@ void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
 
       // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
       //this->setCornerWidget ( this->corner, cornerPosition );
-      this->cornerRight->addAction ( this->showHideTabAct );
+      this->cornerBottomRight->addAction ( this->showHideTabAct );
       break;
 
     default:
@@ -216,6 +262,29 @@ void TabWidget::setTabPosition ( QTabWidget::TabPosition tabPosition ) {
 
   QTabWidget::setTabPosition ( tabPosition );
   //this->corner->updateArrowDirection ();
+}
+
+void TabWidget::collapse ( bool collapse ) {
+
+  // TODO: Aquí determinar como redimensionar un widget con los diferentes
+  // métodos de modificación tel tamaño de los widget's
+  if ( collapse ) {
+
+    qDebug () << "Es colapsado";
+    this->previousHeight = this->height ();
+    this->setMinimumHeight ( 0 );
+    this->setMaximumHeight ( 27 );
+    //this->resize ( this->width (), 0 );
+    //this->setGeometry ( this->geometry ().x (), this->geometry ().y (), this->geometry ().width (), 0 );
+
+  } else {
+
+    qDebug () << "No Es colapsado";
+    this->setMinimumHeight ( this->previousHeight );
+    this->setMaximumHeight ( 16777215 );
+    //this->setGeometry ( this->geometry ().x (), this->geometry ().y (), this->geometry ().width (), this->previousHeight );
+    //this->resize ( this->width (), this->previousHeight );
+  }
 }
 
 /*

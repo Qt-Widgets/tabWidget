@@ -40,7 +40,7 @@ namespace Com {
               Q_OBJECT
 
             public:
-              explicit TabWidget ( bool collapsible = true, bool animated = true, QWidget *parent = 0 );
+              explicit TabWidget ( bool collapsible = true, bool animated = true, QTabWidget::TabPosition tabPosition = QTabWidget::North, QWidget *parent = 0 );
 
               enum CornerPosition {
 
@@ -62,6 +62,7 @@ namespace Com {
     void setOpenTabWidget ( bool value );
     void setPreviousHeight ( int value );*/
 
+              void addAction ( QAction *action, TabWidget::CornerPosition cornerPosition );
               TabWidget::CornerPosition getIndicatorPosition () const;
               bool isAnimated () const;
               bool isCollapsible () const;
@@ -78,15 +79,15 @@ namespace Com {
 
             public slots:
               //void launchAnimation ();
+              void collapse ( bool collapse );
 
             private:
-              Corner *cornerLeft = nullptr;
-              Corner *cornerRight = nullptr;
+              Corner *cornerTopLeft= nullptr;
+              Corner *cornerBottomRight = nullptr;
               /*QParallelAnimationGroup *toggleAnimation;
     bool lockedTabWidget = false;
     bool openTabWidget = true;
     int previousIndex;
-    int previousHeight;
     int timerId;
     bool finishedAnimation = false;*/
               bool collapsible = false;
@@ -94,6 +95,7 @@ namespace Com {
               bool floating = false;
               TabWidget::CornerPosition indicatorPosition = TabWidget::Right;
               ShowHideTabAct *showHideTabAct = nullptr;
+              int previousHeight;
           };
         }
       }

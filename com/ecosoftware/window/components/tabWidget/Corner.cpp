@@ -3,90 +3,56 @@
 
 using namespace Com::Ecosoftware::Window::Components::TabWidget;
 
-Corner::Corner ( QWidget *parent ) : QWidget ( parent ) {
+Corner::Corner ( QTabWidget::TabPosition cornerPosition, QWidget *parent ) : QWidget ( parent ) {
 
   this->setContentsMargins ( 0, 0, 0, 0 );
   this->setSizePolicy ( QSizePolicy::Maximum, QSizePolicy::Maximum );
+  this->cornerPosition = cornerPosition;
+  if ( ( cornerPosition == QTabWidget::East ) || ( cornerPosition == QTabWidget::West ) ) {
 
-  /*this->showHideTabWidgetBtn = new QToolButton ( this );
-  this->showHideTabWidgetBtn->setObjectName ( "showHideTabWidgetBtn" );
-  this->showHideTabWidgetBtn->setSizePolicy ( QSizePolicy::Maximum, QSizePolicy::Maximum );
-  this->showHideTabWidgetBtn->setStyleSheet ( "QToolButton {border: none;}" );
-  this->showHideTabWidgetBtn->setToolButtonStyle ( Qt::ToolButtonIconOnly );
-  //this->showHideTabWidgetBtn->setArrowType ( Qt::ArrowType::DownArrow );
-  //this->showHideTabWidgetBtn->setToolTip ( "Collapse" );
-  this->showHideTabWidgetBtn->setToolTipDuration ( 5000 );
-  this->showHideTabWidgetBtn->setCheckable ( true );
-  this->showHideTabWidgetBtn->setChecked ( false );
-  this->showHideTabWidgetBtn->setMinimumSize ( 16, 16 );*/
+    this->mainLayout = new QHBoxLayout ( this );
 
-  this->mainLayout = new QHBoxLayout ( this );
+  } else if ( ( cornerPosition == QTabWidget::North ) || ( cornerPosition == QTabWidget::South ) ) {
+
+    this->mainLayout = new QVBoxLayout ( this );
+  }
   this->mainLayout->setContentsMargins ( 0, 0, 0, 0 );
-  //this->mainLayout->addWidget ( this->showHideTabWidgetBtn );
   this->setLayout ( this->mainLayout );
+  //this->mainLayout->addWidget ( this->showHideTabWidgetBtn );
   //connect ( this->showHideTabWidgetBtn, SIGNAL ( toggled ( bool ) ), this, SLOT ( toggleShowHideTabWidgetBtn ( bool ) ) );
   //this->updateArrowDirection ();
 }
 
 void Corner::updateArrowDirection () {
 
-  /*switch ( ( ( QTabWidget * ) this->parentWidget () )->tabPosition () ) {
+  QToolButton *toolButton = this->findChild<QToolButton *> ( "Com::Ecosoftware::Window::Components::TabWidget::ShowHideTabActBtn" );
+  switch ( this->cornerPosition ) {
 
-    case QTabWidget::North: {
+    case QTabWidget::North:
 
-      qDebug () << "Está entrando por el norte";
-      QWidget *corner = ( ( QTabWidget * ) this->parentWidget () )->cornerWidget ( Qt::TopRightCorner );
-      if ( corner ) {
-
-        this->showHideTabWidgetBtn->setArrowType ( this->showHideTabWidgetBtn->isChecked () ? Qt::ArrowType::LeftArrow : Qt::ArrowType::DownArrow );
-
-      } else {
-
-        this->showHideTabWidgetBtn->setArrowType ( this->showHideTabWidgetBtn->isChecked () ? Qt::ArrowType::RightArrow : Qt::ArrowType::DownArrow );
-      }
+      toolButton->setArrowType ( toolButton->isChecked () ? Qt::ArrowType::LeftArrow : Qt::ArrowType::DownArrow );
       break;
-    }
-    case QTabWidget::South: {
 
-      qDebug () << "Está entrando por el sur";
-      QWidget *corner = ( ( QTabWidget * ) this->parentWidget () )->cornerWidget ( Qt::TopRightCorner );
-      if ( corner ) {
+    case QTabWidget::South:
 
-        this->showHideTabWidgetBtn->setArrowType ( this->showHideTabWidgetBtn->isChecked () ? Qt::ArrowType::LeftArrow : Qt::ArrowType::UpArrow );
-
-      } else {
-
-        this->showHideTabWidgetBtn->setArrowType ( this->showHideTabWidgetBtn->isChecked () ? Qt::ArrowType::RightArrow : Qt::ArrowType::UpArrow );
-      }
+      toolButton->setArrowType ( toolButton->isChecked () ? Qt::ArrowType::LeftArrow : Qt::ArrowType::DownArrow );
       break;
-    }
+
     case QTabWidget::East:
 
-      qDebug () << "Está entrando por el este";
-      this->showHideTabWidgetBtn->setArrowType ( this->showHideTabWidgetBtn->isChecked () ? Qt::ArrowType::LeftArrow : Qt::ArrowType::DownArrow );
+      toolButton->setArrowType ( toolButton->isChecked () ? Qt::ArrowType::LeftArrow : Qt::ArrowType::DownArrow );
       break;
 
     case QTabWidget::West:
 
-      qDebug () << "Está entrando por el oeste";
-      this->showHideTabWidgetBtn->setArrowType ( this->showHideTabWidgetBtn->isChecked () ? Qt::ArrowType::LeftArrow : Qt::ArrowType::DownArrow );
+      toolButton->setArrowType ( toolButton->isChecked () ? Qt::ArrowType::LeftArrow : Qt::ArrowType::DownArrow );
       break;
 
     default:
 
-      qDebug () << "Está entrando por el predeterminado";
-      QWidget *corner = ( ( QTabWidget * ) this->parentWidget () )->cornerWidget ( Qt::TopRightCorner );
-      if ( corner ) {
-
-        this->showHideTabWidgetBtn->setArrowType ( this->showHideTabWidgetBtn->isChecked () ? Qt::ArrowType::LeftArrow : Qt::ArrowType::DownArrow );
-
-      } else {
-
-        this->showHideTabWidgetBtn->setArrowType ( this->showHideTabWidgetBtn->isChecked () ? Qt::ArrowType::RightArrow : Qt::ArrowType::DownArrow );
-      }
+      toolButton->setArrowType ( toolButton->isChecked () ? Qt::ArrowType::LeftArrow : Qt::ArrowType::DownArrow );
       break;
   }
-  this->showHideTabWidgetBtn->setToolTip ( this->showHideTabWidgetBtn->isChecked () ? "Uncollapse" : "Collapse" );*/
 }
 
 void Corner::toggleShowHideTabWidgetBtn ( bool checked ) {
@@ -104,9 +70,18 @@ void Corner::toggleShowHideTabWidgetBtn ( bool checked ) {
   //}
 }
 
+QTabWidget::TabPosition Corner::getCornerPosition () const {
+
+  return this->cornerPosition;
+}
+
+void Corner::setCornerPosition ( const QTabWidget::TabPosition &value ) {
+
+  this->cornerPosition = value;
+}
+
 void Corner::Corner::addAction ( QAction *action ) {
 
-  qDebug () << "Está entrando al addAction";
   QToolButton *toolBtn = new QToolButton ( this );
   toolBtn->setDefaultAction ( action );
   toolBtn->setObjectName ( action->objectName () + "Btn" );
@@ -118,12 +93,10 @@ void Corner::Corner::addAction ( QAction *action ) {
   toolBtn->setCheckable ( true );
   toolBtn->setChecked ( false );
   toolBtn->setMinimumSize ( 16, 16 );
-  qDebug () << action->objectName ();
   if ( action->objectName ().compare ( "Com::Ecosoftware::Window::Components::TabWidget::ShowHideTabAct" ) == 0 ) {
 
-    qDebug () << "Está asignando la flecha";
     toolBtn->setArrowType ( Qt::ArrowType::DownArrow );
+    connect ( toolBtn, SIGNAL ( toggled ( bool ) ), this, SLOT ( toggleShowHideTabWidgetBtn ( bool ) ) );
   }
-  qDebug () << "Está saliendo del addAction";
   this->mainLayout->addWidget ( toolBtn );
 }

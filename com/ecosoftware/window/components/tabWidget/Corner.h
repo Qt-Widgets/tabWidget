@@ -8,12 +8,14 @@
 // Librerías Qt
 /*#include <QAbstractAnimation>*/
 #include <QAction>
+#include <QBoxLayout>
 #include <QHBoxLayout>
 /*#include <QMainWindow>
 #include <QParallelAnimationGroup>
-#include <QPropertyAnimation>
-#include <QTabWidget>*/
+#include <QPropertyAnimation>*/
+#include <QTabWidget>
 #include <QToolButton>
+#include <QVBoxLayout>
 #include <QWidget>
 
 namespace Com {
@@ -31,17 +33,21 @@ namespace Com {
               Q_OBJECT
 
             public:
-              explicit Corner ( QWidget *parent = 0 );
+              explicit Corner ( QTabWidget::TabPosition cornerPosition = QTabWidget::North, QWidget *parent = 0 );
 
               void addAction ( QAction *action );
+              QTabWidget::TabPosition getCornerPosition () const;
               void updateArrowDirection ();
+              void setCornerPosition ( const QTabWidget::TabPosition &value );
 
             public slots:
               void toggleShowHideTabWidgetBtn ( bool checked );
 
             private:
               QToolButton *showHideTabWidgetBtn;
-              QHBoxLayout *mainLayout;
+              QBoxLayout *mainLayout;
+              QTabWidget::TabPosition cornerPosition;
+
           };
         }
       }
