@@ -11,13 +11,13 @@
 /*#include <QFlags>
 #include <QFocusEvent>
 #include <QHBoxLayout>
-#include <QParallelAnimationGroup>
+#include <QParallelAnimationGroup>*/
 #include <QPropertyAnimation>
-#include <QResizeEvent>
+/*#include <QResizeEvent>
 #include <QShowEvent>
 #include <QSizePolicy>
-#include <QString>
-#include <QTabBar>*/
+#include <QString>*/
+#include <QTabBar>
 #include <QTabWidget>
 /*#include <QThread>
 #include <QTimerEvent>
@@ -96,6 +96,13 @@ namespace Com {
               TabWidget::CornerPosition indicatorPosition = TabWidget::Right;
               ShowHideTabAct *showHideTabAct = nullptr;
               int previousHeight;
+              QPropertyAnimation *minHeightPropertyAnimation;
+              QPropertyAnimation *maxHeightPropertyAnimation;
+
+              void collapsedAnimated ();
+              void collapsedUnanimated ();
+              void uncollapsedAnimated ();
+              void uncollapsedUnanimated ();
           };
         }
       }

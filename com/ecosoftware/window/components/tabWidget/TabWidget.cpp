@@ -5,6 +5,7 @@ using namespace Com::Ecosoftware::Window::Components::TabWidget;
 
 TabWidget::TabWidget ( bool collapsible, bool animated, TabPosition tabPosition, QWidget *parent ) : QTabWidget ( parent ) {
 
+  // TODO: En algún punto hay que hacer lo del ejemplo del WidgetResize
   // TODO: Por si desaparece el cornerWidget
   // https://stackoverflow.com/questions/18144626/qtabwidget-corner-qtoolbutton-widget-disappearing
   // http://www.qtcentre.org/threads/12539-QTabWidget-corner-widget-is-not-shown
@@ -16,6 +17,7 @@ TabWidget::TabWidget ( bool collapsible, bool animated, TabPosition tabPosition,
   // https://code.woboq.org/qt5/qtbase/src/widgets/widgets/qtabwidget.cpp.html
   // https://code.woboq.org/qt5/qtbase/src/widgets/widgets/qtabwidget.h.html
 
+  this->setMovable ( true );
   this->setTabPosition ( tabPosition );
 
   if ( ( tabPosition == QTabWidget::North ) || ( tabPosition == QTabWidget::South ) ) {
@@ -34,6 +36,7 @@ TabWidget::TabWidget ( bool collapsible, bool animated, TabPosition tabPosition,
   }
   qDebug () << "Terminó de crear las esquinas";
   this->setCollapsible ( collapsible );
+  // TODO: en que punto crear la animación del colapsado
   this->setAnimated ( animated );
   this->setMinimumHeight ( 0 );
 
@@ -173,6 +176,16 @@ void TabWidget::setAnimated ( bool value ) {
 
   this->animated = value;
   // TODO: Aquí activar/desactivar la animación.
+  if ( this->animated ) {
+
+    qDebug () << "Se solicitó animación";
+    this->minHeightPropertyAnimation = new QPropertyAnimation ( this, "minimumHeight" );
+    this->maxHeightPropertyAnimation = new QPropertyAnimation ( this, "maximumHeight" );
+
+  } else {
+
+
+  }
 }
 
 void TabWidget::setCollapsible ( bool value ) {
@@ -267,24 +280,82 @@ void TabWidget::setTabPosition ( QTabWidget::TabPosition tabPosition ) {
 void TabWidget::collapse ( bool collapse ) {
 
   // TODO: Aquí determinar como redimensionar un widget con los diferentes
-  // métodos de modificación tel tamaño de los widget's
+  // métodos de modificación del tamaño de los widget's
   if ( collapse ) {
 
-    qDebug () << "Es colapsado";
-    this->previousHeight = this->height ();
-    this->setMinimumHeight ( 0 );
-    this->setMaximumHeight ( 27 );
-    //this->resize ( this->width (), 0 );
-    //this->setGeometry ( this->geometry ().x (), this->geometry ().y (), this->geometry ().width (), 0 );
+    if ( this->isAnimated () ) {
 
+      this->collapsedAnimated ();
+
+    } else {
+
+      this->collapsedUnanimated ();
+    }
   } else {
 
-    qDebug () << "No Es colapsado";
-    this->setMinimumHeight ( this->previousHeight );
-    this->setMaximumHeight ( 16777215 );
-    //this->setGeometry ( this->geometry ().x (), this->geometry ().y (), this->geometry ().width (), this->previousHeight );
-    //this->resize ( this->width (), this->previousHeight );
+    if ( this->isAnimated () ) {
+
+      this->uncollapsedAnimated ();
+
+    } else {
+
+      this->uncollapsedUnanimated ();
+    }
   }
+}
+
+void TabWidget::collapsedAnimated () {
+
+  qDebug () << "Si entró por el void TabWidget::collapsedAnimated () {";
+  this->previousHeight = this->height ();
+  this->maxHeightPropertyAnimation->setDuration ( 300 );
+  this->maxHeightPropertyAnimation->setStartValue ( this->previousHeight );
+  this->maxHeightPropertyAnimation->setEndValue ( this->tabBar ()->height () + 2 );
+
+  /*this->minHeightPropertyAnimation->setDuration ( 300 );
+  this->minHeightPropertyAnimation->setStartValue ( 0 );
+  this->minHeightPropertyAnimation->setEndValue ( this->tabBar ()->height () );*/
+
+  this->maxHeightPropertyAnimation->start ();
+}
+
+void TabWidget::collapsedUnanimated () {
+
+  qDebug () << "Es colapsado";
+  this->previousHeight = this->height ();
+  this->setMinimumHeight ( 0 );
+  this->setMaximumHeight ( this->tabBar ()->height () + 2 );
+  //this->resize ( this->width (), 0 );
+  //this->setGeometry ( this->geometry ().x (), this->geometry ().y (), this->geometry ().width (), 0 );
+}
+
+void TabWidget::uncollapsedAnimated () {
+
+  qDebug () << "Si entró por el void TabWidget::uncollapsedAnimated () {";
+  //this->previousHeight = this->height ();
+  this->minHeightPropertyAnimation->setDuration ( 300 );
+  this->minHeightPropertyAnimation->setStartValue ( 0 );
+  this->minHeightPropertyAnimation->setEndValue ( this->previousHeight );
+  this->previousHeight = this->height ();
+  /*this->minHeightPropertyAnimation->setDuration ( 300 );
+  this->minHeightPropertyAnimation->setStartValue ( 0 );
+  this->minHeightPropertyAnimation->setEndValue ( this->tabBar ()->height () );*/
+
+  this->minHeightPropertyAnimation->start ();
+}
+
+void TabWidget::uncollapsedUnanimated () {
+
+  // TODO: cuando está colapsado, y se reajusta la ventana muestra el valor
+  // previamente guardado, pero debería guardar el nuevo valor despues del
+  // ajuste de ventana
+  qDebug () << "No Es colapsado";
+  qDebug () << "this->previousHeight" << this->previousHeight;
+  this->setMinimumHeight ( this->previousHeight );
+  this->setMinimumHeight ( 0 );
+  this->setMaximumHeight ( 16777215 );
+  //this->setGeometry ( this->geometry ().x (), this->geometry ().y (), this->geometry ().width (), this->previousHeight );
+  //this->resize ( this->width (), this->previousHeight );
 }
 
 /*

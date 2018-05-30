@@ -6,7 +6,7 @@
 MainWindow::MainWindow ( QWidget *parent ) : QMainWindow ( parent ) {
 
   this->resize ( 400, 250 );
-  Com::Ecosoftware::Window::Components::TabWidget::TabWidget *collapsibleTabWidget = new Com::Ecosoftware::Window::Components::TabWidget::TabWidget ( true, false, QTabWidget::North, this/*this*/ );
+  Com::Ecosoftware::Window::Components::TabWidget::TabWidget *collapsibleTabWidget = new Com::Ecosoftware::Window::Components::TabWidget::TabWidget ( true, true, QTabWidget::North, this );
 
   QWidget *prueba = new QWidget ( this );
   prueba->setStyleSheet ( "background-color: yellow" );
