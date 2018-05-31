@@ -176,16 +176,6 @@ void TabWidget::setAnimated ( bool value ) {
 
   this->animated = value;
   // TODO: Aquí activar/desactivar la animación.
-  if ( this->animated ) {
-
-    qDebug () << "Se solicitó animación";
-    this->minHeightPropertyAnimation = new QPropertyAnimation ( this, "minimumHeight" );
-    this->maxHeightPropertyAnimation = new QPropertyAnimation ( this, "maximumHeight" );
-
-  } else {
-
-
-  }
 }
 
 void TabWidget::setCollapsible ( bool value ) {
@@ -218,6 +208,24 @@ void TabWidget::setCollapsible ( bool value ) {
 
       // TODO: Buscarlo y ocultarlo y quitarlo de la esquina donde se encuentre ubicado.
     }
+  }
+}
+
+void TabWidget::setDuration ( int msecs ) {
+
+  if ( ( this->maxHeightPropertyAnimation != nullptr ) && ( this->minHeightPropertyAnimation != nullptr ) ) {
+
+    this->maxHeightPropertyAnimation->setDuration ( msecs );
+    this->minHeightPropertyAnimation->setDuration ( msecs );
+  }
+}
+
+void TabWidget::setEasingCurve ( const QEasingCurve &easing ) {
+
+  if ( ( this->maxHeightPropertyAnimation != nullptr ) && ( this->minHeightPropertyAnimation != nullptr ) ) {
+
+    this->maxHeightPropertyAnimation->setEasingCurve ( easing );
+    this->minHeightPropertyAnimation->setEasingCurve ( easing );
   }
 }
 
@@ -279,8 +287,6 @@ void TabWidget::setTabPosition ( QTabWidget::TabPosition tabPosition ) {
 
 void TabWidget::collapse ( bool collapse ) {
 
-  // TODO: Aquí determinar como redimensionar un widget con los diferentes
-  // métodos de modificación del tamaño de los widget's
   if ( collapse ) {
 
     if ( this->isAnimated () ) {
@@ -304,58 +310,41 @@ void TabWidget::collapse ( bool collapse ) {
   }
 }
 
+void TabWidget::onStopedAnimation () {
+
+  if ( ( ( QPropertyAnimation * ) QObject::sender () )->objectName ().compare ( "MaxAnimation" ) == 0 ) {
+
+    //this->setMaximumHeight ( 16777215 );
+
+  } else if ( ( ( QPropertyAnimation * ) QObject::sender () )->objectName ().compare ( "MinAnimation" ) == 0 ) {
+
+    this->setMinimumHeight ( 0 );
+    this->setMaximumHeight ( 16777215 );
+  }
+}
+
 void TabWidget::collapsedAnimated () {
-
-  qDebug () << "Si entró por el void TabWidget::collapsedAnimated () {";
-  this->previousHeight = this->height ();
-  this->maxHeightPropertyAnimation->setDuration ( 300 );
-  this->maxHeightPropertyAnimation->setStartValue ( this->previousHeight );
-  this->maxHeightPropertyAnimation->setEndValue ( this->tabBar ()->height () + 2 );
-
-  /*this->minHeightPropertyAnimation->setDuration ( 300 );
-  this->minHeightPropertyAnimation->setStartValue ( 0 );
-  this->minHeightPropertyAnimation->setEndValue ( this->tabBar ()->height () );*/
 
   this->maxHeightPropertyAnimation->start ();
 }
 
 void TabWidget::collapsedUnanimated () {
 
-  qDebug () << "Es colapsado";
   this->previousHeight = this->height ();
   this->setMinimumHeight ( 0 );
   this->setMaximumHeight ( this->tabBar ()->height () + 2 );
-  //this->resize ( this->width (), 0 );
-  //this->setGeometry ( this->geometry ().x (), this->geometry ().y (), this->geometry ().width (), 0 );
 }
 
 void TabWidget::uncollapsedAnimated () {
-
-  qDebug () << "Si entró por el void TabWidget::uncollapsedAnimated () {";
-  //this->previousHeight = this->height ();
-  this->minHeightPropertyAnimation->setDuration ( 300 );
-  this->minHeightPropertyAnimation->setStartValue ( 0 );
-  this->minHeightPropertyAnimation->setEndValue ( this->previousHeight );
-  this->previousHeight = this->height ();
-  /*this->minHeightPropertyAnimation->setDuration ( 300 );
-  this->minHeightPropertyAnimation->setStartValue ( 0 );
-  this->minHeightPropertyAnimation->setEndValue ( this->tabBar ()->height () );*/
 
   this->minHeightPropertyAnimation->start ();
 }
 
 void TabWidget::uncollapsedUnanimated () {
 
-  // TODO: cuando está colapsado, y se reajusta la ventana muestra el valor
-  // previamente guardado, pero debería guardar el nuevo valor despues del
-  // ajuste de ventana
-  qDebug () << "No Es colapsado";
-  qDebug () << "this->previousHeight" << this->previousHeight;
   this->setMinimumHeight ( this->previousHeight );
   this->setMinimumHeight ( 0 );
   this->setMaximumHeight ( 16777215 );
-  //this->setGeometry ( this->geometry ().x (), this->geometry ().y (), this->geometry ().width (), this->previousHeight );
-  //this->resize ( this->width (), this->previousHeight );
 }
 
 /*
@@ -532,34 +521,54 @@ void TabWidget::timerEvent ( QTimerEvent *timerEvent ) {
   this->killTimer ( timerEvent->timerId () );
   this->timerId = 0;
   qDebug () << "this->previousHeight línea 267" << this->previousHeight;
-}
+}*/
 
 void TabWidget::resizeEvent ( QResizeEvent *event ) {
 
-  qDebug () << "Entró por la línea 208";
-  if ( this->timerId ) {
+  QTabWidget::resizeEvent ( event );
+  this->previousHeight = this->parentWidget ()->height ();
+  if ( this->isAnimated () ) {
 
-    this->killTimer ( this->timerId );
-    this->timerId = 0;
+    if ( ( this->maxHeightPropertyAnimation == nullptr ) || ( this->minHeightPropertyAnimation == nullptr ) ) {
+
+      this->setAnimation ();
+
+    } else {
+
+      this->minHeightPropertyAnimation->setEndValue ( this->previousHeight );
+      this->maxHeightPropertyAnimation->setStartValue ( this->previousHeight );
+    }
   }
-  this->timerId = this->startTimer ( 50 ); // delay beetween ends of resize and your action
-  if ( ( this->toggleAnimation->state () == QAbstractAnimation::Stopped ) && ( this->toggleAnimation->direction () == QAbstractAnimation::Backward ) ) {
-
-    qDebug () << "La animación está detenida y va en retoceso";
-    //this->parentWidget ()->setGeometry ( this->parentWidget ()->x (), this->parentWidget ()->y (), this->parentWidget ()->width (), this->previousHeight );
-    event->accept ();
-    this->finishedAnimation = true;
-
-  } else {
-
-    qDebug () << "La animación no está detenida";
-    QTabWidget::resizeEvent ( event );
-  }
-
-  qDebug () << "this->previousHeight línea 291" << this->previousHeight;
 }
 
 void TabWidget::setAnimation () {
+
+  if ( this->animated ) {
+
+    this->minHeightPropertyAnimation = new QPropertyAnimation ( this, "minimumHeight" );
+    this->minHeightPropertyAnimation->setObjectName ( "MinAnimation" );
+    this->minHeightPropertyAnimation->setDuration ( 500 );
+    this->minHeightPropertyAnimation->setEasingCurve ( QEasingCurve::OutBounce );
+    this->minHeightPropertyAnimation->setStartValue ( this->tabBar ()->height () + 2 );
+    this->minHeightPropertyAnimation->setEndValue ( this->previousHeight );
+
+    this->maxHeightPropertyAnimation = new QPropertyAnimation ( this, "maximumHeight" );
+    this->maxHeightPropertyAnimation->setObjectName ( "MaxAnimation" );
+    this->maxHeightPropertyAnimation->setDuration ( 500 );
+    this->maxHeightPropertyAnimation->setEasingCurve ( QEasingCurve::OutBounce );
+    this->maxHeightPropertyAnimation->setStartValue ( this->previousHeight );
+    this->maxHeightPropertyAnimation->setEndValue ( this->tabBar ()->height () + 2 );
+
+    connect ( this->maxHeightPropertyAnimation, SIGNAL ( finished () ), this, SLOT ( onStopedAnimation () ) );
+    connect ( this->minHeightPropertyAnimation, SIGNAL ( finished () ), this, SLOT ( onStopedAnimation () ) );
+
+  } else {
+
+
+  }
+}
+
+/*void TabWidget::setAnimation () {
 
   /*switch ( this->tabPosition () ) {
 

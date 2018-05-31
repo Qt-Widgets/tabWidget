@@ -13,8 +13,8 @@
 #include <QHBoxLayout>
 #include <QParallelAnimationGroup>*/
 #include <QPropertyAnimation>
-/*#include <QResizeEvent>
-#include <QShowEvent>
+#include <QResizeEvent>
+/*#include <QShowEvent>
 #include <QSizePolicy>
 #include <QString>*/
 #include <QTabBar>
@@ -56,7 +56,6 @@ namespace Com {
     int getPreviousHeight () const;
     QParallelAnimationGroup *getToggleAnimation () const;
     void leaveEvent ( QEvent *event ) Q_DECL_OVERRIDE;
-    void setAnimation ();
     void setCornerWidget ( QWidget *widget, Qt::Corner corner = Qt::TopRightCorner );
     void setLockedTabWidget ( bool value );
     void setOpenTabWidget ( bool value );
@@ -69,17 +68,22 @@ namespace Com {
               bool isFloating () const;
               void setAnimated ( bool value );
               void setCollapsible ( bool value );
+              void setDuration ( int msecs );
+              void setEasingCurve ( const QEasingCurve &easing );
               void setIndicatorPosition ( TabWidget::CornerPosition cornerPosition );
               void setFloating ( bool value );
               void setTabPosition ( QTabWidget::TabPosition tabPosition );
               //void timerEvent ( QTimerEvent *timerEvent ) Q_DECL_OVERRIDE;
 
             protected:
-              //void resizeEvent ( QResizeEvent *event ) Q_DECL_OVERRIDE;
+              void resizeEvent ( QResizeEvent *event ) Q_DECL_OVERRIDE;
 
             public slots:
               //void launchAnimation ();
+
+            private slots:
               void collapse ( bool collapse );
+              void onStopedAnimation ();
 
             private:
               Corner *cornerTopLeft= nullptr;
@@ -96,13 +100,14 @@ namespace Com {
               TabWidget::CornerPosition indicatorPosition = TabWidget::Right;
               ShowHideTabAct *showHideTabAct = nullptr;
               int previousHeight;
-              QPropertyAnimation *minHeightPropertyAnimation;
-              QPropertyAnimation *maxHeightPropertyAnimation;
+              QPropertyAnimation *minHeightPropertyAnimation = nullptr;
+              QPropertyAnimation *maxHeightPropertyAnimation = nullptr;
 
               void collapsedAnimated ();
               void collapsedUnanimated ();
               void uncollapsedAnimated ();
               void uncollapsedUnanimated ();
+              void setAnimation ();
           };
         }
       }
