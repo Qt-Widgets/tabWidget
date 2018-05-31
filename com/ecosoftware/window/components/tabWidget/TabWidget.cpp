@@ -19,7 +19,6 @@ TabWidget::TabWidget ( bool collapsible, bool animated, TabPosition tabPosition,
 
   this->setMovable ( true );
   this->setTabPosition ( tabPosition );
-
   if ( ( tabPosition == QTabWidget::North ) || ( tabPosition == QTabWidget::South ) ) {
 
     this->cornerTopLeft = new Corner ( QTabWidget::North, this );
@@ -34,9 +33,7 @@ TabWidget::TabWidget ( bool collapsible, bool animated, TabPosition tabPosition,
     this->cornerBottomRight = new Corner ( QTabWidget::East, this );
     this->setCornerWidget ( this->cornerBottomRight, Qt::TopRightCorner );
   }
-  qDebug () << "Terminó de crear las esquinas";
   this->setCollapsible ( collapsible );
-  // TODO: en que punto crear la animación del colapsado
   this->setAnimated ( animated );
   this->setMinimumHeight ( 0 );
 
@@ -45,11 +42,6 @@ TabWidget::TabWidget ( bool collapsible, bool animated, TabPosition tabPosition,
   //this->previousIndex = 0;
   //this->openTabWidget = true;
   //this->setCurrentIndex ( 0 );
-
-  // allows the entire widget to expand or contract with its content
-  //this->toggleAnimation = new QParallelAnimationGroup ( this );
-  //this->toggleAnimation->addAnimation ( new QPropertyAnimation ( this, "minimumHeight" ) );
-  //this->toggleAnimation->addAnimation ( new QPropertyAnimation ( this, "maximumHeight" ) );
 
   //connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( setCurrentIndex ( int ) ) );
   //connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( launchAnimation () ) );
@@ -191,7 +183,7 @@ void TabWidget::setCollapsible ( bool value ) {
 
       // TODO: Crear la acción.
       this->showHideTabAct = new ShowHideTabAct ( "Collapse", this );
-      connect ( this->showHideTabAct, SIGNAL ( triggered ( bool ) ), this, SLOT ( collapse ( bool ) ) );
+      connect ( this->showHideTabAct, SIGNAL ( triggered ( bool ) ), this, SLOT ( onCollapse ( bool ) ) );
       qDebug () << "Está creando la acción";
 
     } else {
@@ -285,9 +277,9 @@ void TabWidget::setTabPosition ( QTabWidget::TabPosition tabPosition ) {
   //this->corner->updateArrowDirection ();
 }
 
-void TabWidget::collapse ( bool collapse ) {
+void TabWidget::onCollapse ( bool onCollapse ) {
 
-  if ( collapse ) {
+  if ( onCollapse ) {
 
     if ( this->isAnimated () ) {
 
@@ -310,7 +302,7 @@ void TabWidget::collapse ( bool collapse ) {
   }
 }
 
-void TabWidget::onStopedAnimation () {
+void TabWidget::onStoppedAnimation () {
 
   if ( ( ( QPropertyAnimation * ) QObject::sender () )->objectName ().compare ( "MaxAnimation" ) == 0 ) {
 
@@ -559,8 +551,8 @@ void TabWidget::setAnimation () {
     this->maxHeightPropertyAnimation->setStartValue ( this->previousHeight );
     this->maxHeightPropertyAnimation->setEndValue ( this->tabBar ()->height () + 2 );
 
-    connect ( this->maxHeightPropertyAnimation, SIGNAL ( finished () ), this, SLOT ( onStopedAnimation () ) );
-    connect ( this->minHeightPropertyAnimation, SIGNAL ( finished () ), this, SLOT ( onStopedAnimation () ) );
+    connect ( this->maxHeightPropertyAnimation, SIGNAL ( finished () ), this, SLOT ( onStoppedAnimation () ) );
+    connect ( this->minHeightPropertyAnimation, SIGNAL ( finished () ), this, SLOT ( onStoppedAnimation () ) );
 
   } else {
 

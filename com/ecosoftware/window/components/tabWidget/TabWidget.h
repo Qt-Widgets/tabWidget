@@ -63,31 +63,31 @@ namespace Com {
 
               void addAction ( QAction *action, TabWidget::CornerPosition cornerPosition );
               TabWidget::CornerPosition getIndicatorPosition () const;
-              bool isAnimated () const;
-              bool isCollapsible () const;
+              bool isAnimated () const; // LISTO
+              bool isCollapsible () const; // LISTO
               bool isFloating () const;
               void setAnimated ( bool value );
               void setCollapsible ( bool value );
-              void setDuration ( int msecs );
-              void setEasingCurve ( const QEasingCurve &easing );
+              void setDuration ( int msecs ); // LISTO
+              void setEasingCurve ( const QEasingCurve &easing ); // LISTO
               void setIndicatorPosition ( TabWidget::CornerPosition cornerPosition );
               void setFloating ( bool value );
               void setTabPosition ( QTabWidget::TabPosition tabPosition );
               //void timerEvent ( QTimerEvent *timerEvent ) Q_DECL_OVERRIDE;
 
-            protected:
-              void resizeEvent ( QResizeEvent *event ) Q_DECL_OVERRIDE;
-
             public slots:
               //void launchAnimation ();
 
+            protected:
+              void resizeEvent ( QResizeEvent *event ) Q_DECL_OVERRIDE;
+
             private slots:
-              void collapse ( bool collapse );
-              void onStopedAnimation ();
+              void onCollapse ( bool onCollapse );
+              void onStoppedAnimation (); // LISTO
 
             private:
-              Corner *cornerTopLeft= nullptr;
-              Corner *cornerBottomRight = nullptr;
+              Corner *cornerTopLeft = nullptr; // LISTO
+              Corner *cornerBottomRight = nullptr; // LISTO
               /*QParallelAnimationGroup *toggleAnimation;
     bool lockedTabWidget = false;
     bool openTabWidget = true;
