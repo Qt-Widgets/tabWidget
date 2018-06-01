@@ -17,6 +17,9 @@ TabWidget::TabWidget ( bool collapsible, bool animated, TabPosition tabPosition,
   // https://code.woboq.org/qt5/qtbase/src/widgets/widgets/qtabwidget.cpp.html
   // https://code.woboq.org/qt5/qtbase/src/widgets/widgets/qtabwidget.h.html
 
+  this->customTabBar = new TabBar ( this );
+  connect ( this->customTabBar, SIGNAL ( onDobleClick () ), this, SLOT ( onDobleClick () ) );
+  this->setTabBar ( this->customTabBar );
   this->setMovable ( true );
   this->setTabPosition ( tabPosition );
   if ( ( tabPosition == QTabWidget::North ) || ( tabPosition == QTabWidget::South ) ) {
@@ -43,8 +46,9 @@ TabWidget::TabWidget ( bool collapsible, bool animated, TabPosition tabPosition,
   //this->openTabWidget = true;
   //this->setCurrentIndex ( 0 );
 
-  //connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( setCurrentIndex ( int ) ) );
-  //connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( launchAnimation () ) );
+  connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( setCurrentIndex ( int ) ) );
+  connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( launchAnimation () ) );
+  connect ( this, SIGNAL ( toCollapse ( bool ) ), this, SLOT ( onCollapse ( bool ) ) );
 }
 
 void TabWidget::addAction ( QAction *action, TabWidget::CornerPosition cornerPosition ) {
@@ -79,6 +83,18 @@ void TabWidget::addAction ( QAction *action, TabWidget::CornerPosition cornerPos
   }
 }
 
+void TabWidget::leaveEvent ( QEvent *event ) {
+
+  if ( event->type () == QEvent::Leave ) {
+
+    /*if ( this->openTabWidget && this->lockedTabWidget ) {
+
+      this->launchAnimation ();
+    }*/
+  }
+  QWidget::leaveEvent ( event );
+}
+
 /*bool TabWidget::getLockedTabWidget () const {
 
   return this->lockedTabWidget;
@@ -87,23 +103,6 @@ void TabWidget::addAction ( QAction *action, TabWidget::CornerPosition cornerPos
 bool TabWidget::getOpenTabWidget () const {
 
   return this->openTabWidget;
-}
-
-QParallelAnimationGroup *TabWidget::getToggleAnimation () const {
-
-  return this->toggleAnimation;
-}
-
-void TabWidget::leaveEvent ( QEvent *event ) {
-
-  if ( event->type () == QEvent::Leave ) {
-
-    if ( this->openTabWidget && this->lockedTabWidget ) {
-
-      this->launchAnimation ();
-    }
-  }
-  QWidget::leaveEvent ( event );
 }
 
 void TabWidget::launchAnimation () {
@@ -229,9 +228,52 @@ void TabWidget::setFloating ( bool value ) {
 void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
 
   qDebug () << "Está entrando al setIndicatorPosition";
-  if ( this->indicatorPosition != cornerPosition ) {
+  if ( this->indicatorPosition != CornerPosition::None ) {
 
     // TODO: Aquí obtener la acción indicadora expandir/contraer y reasignarla a la nueva posición indicada
+    QList<QToolButton *> allPButtons;
+    switch ( cornerPosition ) {
+
+      case TabWidget::Top: {
+
+        // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
+        //this->setCornerWidget ( this->corner, cornerPosition );
+        allPButtons = this->cornerBottomRight->findChildren<QToolButton *> ();
+        break;
+      }
+      case TabWidget::Bottom: {
+
+        // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
+        //this->setCornerWidget ( this->corner, cornerPosition );
+        allPButtons = this->cornerTopLeft->findChildren<QToolButton *> ();
+        break;
+      }
+      case TabWidget::Left:
+
+        // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
+        //this->setCornerWidget ( this->corner, cornerPosition );
+        //this->cornerTopLeft->addAction ( this->showHideTabAct );
+        allPButtons = this->cornerBottomRight->findChildren<QToolButton *> ();
+        if ( allPButtons.count () > 0 ) {
+
+          qDebug () << "Si hay botones";
+        }
+        break;
+
+      case TabWidget::Right:
+
+        // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
+        //this->setCornerWidget ( this->corner, cornerPosition );
+        //this->cornerBottomRight->addAction ( this->showHideTabAct );
+        allPButtons = this->cornerTopLeft->findChildren<QToolButton *> ();
+        break;
+
+      default:
+
+        // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
+        //this->setCornerWidget ( this->corner, cornerPosition );
+        break;
+    }
   }
   this->indicatorPosition = cornerPosition;
 
@@ -253,6 +295,7 @@ void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
 
       // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
       //this->setCornerWidget ( this->corner, cornerPosition );
+      this->cornerTopLeft->addAction ( this->showHideTabAct );
       break;
 
     case TabWidget::Right:
@@ -277,28 +320,36 @@ void TabWidget::setTabPosition ( QTabWidget::TabPosition tabPosition ) {
   //this->corner->updateArrowDirection ();
 }
 
+void TabWidget::launchAnimation () {
+
+  qDebug () << "Se hizo click en el tabbar";
+}
+
+void TabWidget::onDobleClick () {
+
+  if ( this->collapsible ) {
+
+    // TODO: cambiar la dirección de la flecha indicadora
+    if ( this->lockedTabWidget ) {
+
+      emit toCollapse ( false );
+
+    } else {
+
+      emit toCollapse ( true );
+    }
+  }
+}
+
 void TabWidget::onCollapse ( bool onCollapse ) {
 
   if ( onCollapse ) {
 
-    if ( this->isAnimated () ) {
+    this->collapsed ();
 
-      this->collapsedAnimated ();
-
-    } else {
-
-      this->collapsedUnanimated ();
-    }
   } else {
 
-    if ( this->isAnimated () ) {
-
-      this->uncollapsedAnimated ();
-
-    } else {
-
-      this->uncollapsedUnanimated ();
-    }
+    this->uncollapsed ();
   }
 }
 
@@ -313,6 +364,32 @@ void TabWidget::onStoppedAnimation () {
     this->setMinimumHeight ( 0 );
     this->setMaximumHeight ( 16777215 );
   }
+}
+
+void TabWidget::collapsed () {
+
+  if ( this->isAnimated () ) {
+
+    this->collapsedAnimated ();
+
+  } else {
+
+    this->collapsedUnanimated ();
+  }
+  this->lockedTabWidget = true;
+}
+
+void TabWidget::uncollapsed () {
+
+  if ( this->isAnimated () ) {
+
+    this->uncollapsedAnimated ();
+
+  } else {
+
+    this->uncollapsedUnanimated ();
+  }
+  this->lockedTabWidget = false;
 }
 
 void TabWidget::collapsedAnimated () {
