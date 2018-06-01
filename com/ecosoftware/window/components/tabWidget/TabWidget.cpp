@@ -204,19 +204,19 @@ void TabWidget::setCollapsible ( bool value ) {
 
 void TabWidget::setDuration ( int msecs ) {
 
-  if ( ( this->maxHeightPropertyAnimation != nullptr ) && ( this->minHeightPropertyAnimation != nullptr ) ) {
+  if ( ( this->collapsedAnimation != nullptr ) && ( this->uncollapsedAnimation != nullptr ) ) {
 
-    this->maxHeightPropertyAnimation->setDuration ( msecs );
-    this->minHeightPropertyAnimation->setDuration ( msecs );
+    this->collapsedAnimation->setDuration ( msecs );
+    this->uncollapsedAnimation->setDuration ( msecs );
   }
 }
 
 void TabWidget::setEasingCurve ( const QEasingCurve &easing ) {
 
-  if ( ( this->maxHeightPropertyAnimation != nullptr ) && ( this->minHeightPropertyAnimation != nullptr ) ) {
+  if ( ( this->collapsedAnimation != nullptr ) && ( this->uncollapsedAnimation != nullptr ) ) {
 
-    this->maxHeightPropertyAnimation->setEasingCurve ( easing );
-    this->minHeightPropertyAnimation->setEasingCurve ( easing );
+    this->collapsedAnimation->setEasingCurve ( easing );
+    this->uncollapsedAnimation->setEasingCurve ( easing );
   }
 }
 
@@ -394,7 +394,7 @@ void TabWidget::uncollapsed () {
 
 void TabWidget::collapsedAnimated () {
 
-  this->maxHeightPropertyAnimation->start ();
+  this->collapsedAnimation->start ();
 }
 
 void TabWidget::collapsedUnanimated () {
@@ -406,7 +406,7 @@ void TabWidget::collapsedUnanimated () {
 
 void TabWidget::uncollapsedAnimated () {
 
-  this->minHeightPropertyAnimation->start ();
+  this->uncollapsedAnimation->start ();
 }
 
 void TabWidget::uncollapsedUnanimated () {
@@ -598,14 +598,14 @@ void TabWidget::resizeEvent ( QResizeEvent *event ) {
   this->previousHeight = this->parentWidget ()->height ();
   if ( this->isAnimated () ) {
 
-    if ( ( this->maxHeightPropertyAnimation == nullptr ) || ( this->minHeightPropertyAnimation == nullptr ) ) {
+    if ( ( this->collapsedAnimation == nullptr ) || ( this->uncollapsedAnimation == nullptr ) ) {
 
       this->setAnimation ();
 
     } else {
 
-      this->minHeightPropertyAnimation->setEndValue ( this->previousHeight );
-      this->maxHeightPropertyAnimation->setStartValue ( this->previousHeight );
+      this->uncollapsedAnimation->setEndValue ( this->previousHeight );
+      this->collapsedAnimation->setStartValue ( this->previousHeight );
     }
   }
 }
@@ -614,22 +614,22 @@ void TabWidget::setAnimation () {
 
   if ( this->animated ) {
 
-    this->minHeightPropertyAnimation = new QPropertyAnimation ( this, "minimumHeight" );
-    this->minHeightPropertyAnimation->setObjectName ( "MinAnimation" );
-    this->minHeightPropertyAnimation->setDuration ( 500 );
-    this->minHeightPropertyAnimation->setEasingCurve ( QEasingCurve::OutBounce );
-    this->minHeightPropertyAnimation->setStartValue ( this->tabBar ()->height () + 2 );
-    this->minHeightPropertyAnimation->setEndValue ( this->previousHeight );
+    this->uncollapsedAnimation = new QPropertyAnimation ( this, "minimumHeight" );
+    this->uncollapsedAnimation->setObjectName ( "MinAnimation" );
+    this->uncollapsedAnimation->setDuration ( 500 );
+    this->uncollapsedAnimation->setEasingCurve ( QEasingCurve::OutBounce );
+    this->uncollapsedAnimation->setStartValue ( this->tabBar ()->height () + 2 );
+    this->uncollapsedAnimation->setEndValue ( this->previousHeight );
 
-    this->maxHeightPropertyAnimation = new QPropertyAnimation ( this, "maximumHeight" );
-    this->maxHeightPropertyAnimation->setObjectName ( "MaxAnimation" );
-    this->maxHeightPropertyAnimation->setDuration ( 500 );
-    this->maxHeightPropertyAnimation->setEasingCurve ( QEasingCurve::OutBounce );
-    this->maxHeightPropertyAnimation->setStartValue ( this->previousHeight );
-    this->maxHeightPropertyAnimation->setEndValue ( this->tabBar ()->height () + 2 );
+    this->collapsedAnimation = new QPropertyAnimation ( this, "maximumHeight" );
+    this->collapsedAnimation->setObjectName ( "MaxAnimation" );
+    this->collapsedAnimation->setDuration ( 500 );
+    this->collapsedAnimation->setEasingCurve ( QEasingCurve::OutBounce );
+    this->collapsedAnimation->setStartValue ( this->previousHeight );
+    this->collapsedAnimation->setEndValue ( this->tabBar ()->height () + 2 );
 
-    connect ( this->maxHeightPropertyAnimation, SIGNAL ( finished () ), this, SLOT ( onStoppedAnimation () ) );
-    connect ( this->minHeightPropertyAnimation, SIGNAL ( finished () ), this, SLOT ( onStoppedAnimation () ) );
+    connect ( this->collapsedAnimation, SIGNAL ( finished () ), this, SLOT ( onStoppedAnimation () ) );
+    connect ( this->uncollapsedAnimation, SIGNAL ( finished () ), this, SLOT ( onStoppedAnimation () ) );
 
   } else {
 
