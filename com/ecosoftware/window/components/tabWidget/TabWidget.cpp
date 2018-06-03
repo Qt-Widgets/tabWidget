@@ -24,34 +24,34 @@ TabWidget::TabWidget ( bool collapsible, bool animated, TabPosition tabPosition,
   this->setTabPosition ( tabPosition );
   if ( ( tabPosition == QTabWidget::North ) || ( tabPosition == QTabWidget::South ) ) {
 
-    this->cornerTopLeft = new Corner ( QTabWidget::North, this );
+    this->cornerTopLeft = new CornerWidget ( Qt::TopLeftCorner, QTabWidget::North, this );
     this->setCornerWidget ( this->cornerTopLeft, Qt::TopLeftCorner );
-    this->cornerBottomRight = new Corner ( QTabWidget::South, this );
+    this->cornerBottomRight = new CornerWidget ( Qt::TopRightCorner, QTabWidget::South, this );
     this->setCornerWidget ( this->cornerBottomRight, Qt::TopRightCorner );
 
   } else if ( ( tabPosition == QTabWidget::East ) || ( tabPosition == QTabWidget::West ) ) {
 
-    this->cornerTopLeft = new Corner ( QTabWidget::West, this );
+    this->cornerTopLeft = new CornerWidget ( Qt::TopLeftCorner, QTabWidget::West, this );
     this->setCornerWidget ( this->cornerTopLeft, Qt::TopLeftCorner );
-    this->cornerBottomRight = new Corner ( QTabWidget::East, this );
+    this->cornerBottomRight = new CornerWidget ( Qt::TopRightCorner, QTabWidget::East, this );
     this->setCornerWidget ( this->cornerBottomRight, Qt::TopRightCorner );
   }
   this->setCollapsible ( collapsible );
   this->setAnimated ( animated );
   this->setMinimumHeight ( 0 );
+  this->setCurrentIndex ( 0 );
 
   //this->timerId = 0;
   //this->setSizePolicy ( QSizePolicy::Expanding, QSizePolicy::Expanding );
-  //this->previousIndex = 0;
-  //this->openTabWidget = true;
-  //this->setCurrentIndex ( 0 );
 
   connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( setCurrentIndex ( int ) ) );
   connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( launchAnimation () ) );
   connect ( this, SIGNAL ( toCollapse ( bool ) ), this, SLOT ( onCollapse ( bool ) ) );
+  connect ( this, SIGNAL ( toCollapse ( bool ) ), this->cornerTopLeft, SLOT ( toggleShowHideTabWidgetBtn ( bool ) ) );
+  connect ( this, SIGNAL ( toCollapse ( bool ) ), this->cornerBottomRight, SLOT ( toggleShowHideTabWidgetBtn ( bool ) ) );
 }
 
-void TabWidget::addAction ( QAction *action, TabWidget::CornerPosition cornerPosition ) {
+void TabWidget::addActionCorner ( QAction *action, TabWidget::CornerPosition cornerPosition ) {
 
   qDebug () << "Está entrando por el addAction del TabWidget";
   switch ( cornerPosition ) {
@@ -87,10 +87,10 @@ void TabWidget::leaveEvent ( QEvent *event ) {
 
   if ( event->type () == QEvent::Leave ) {
 
-    /*if ( this->openTabWidget && this->lockedTabWidget ) {
+    if ( this->openTabWidget && this->lockedTabWidget ) {
 
-      this->launchAnimation ();
-    }*/
+      this->collapsed ();
+    }
   }
   QWidget::leaveEvent ( event );
 }
@@ -103,34 +103,6 @@ void TabWidget::leaveEvent ( QEvent *event ) {
 bool TabWidget::getOpenTabWidget () const {
 
   return this->openTabWidget;
-}
-
-void TabWidget::launchAnimation () {
-
-  if ( this->lockedTabWidget ) {
-
-    if ( this->currentIndex () != this->previousIndex ) {
-
-      this->previousIndex = this->currentIndex ();
-      if ( !this->openTabWidget ) {
-
-        this->toggleAnimation->setDirection ( this->openTabWidget ? QAbstractAnimation::Forward : QAbstractAnimation::Backward );
-        this->setOpenTabWidget ( !this->openTabWidget );
-        this->toggleAnimation->start ();
-      }
-    } else {
-
-      this->toggleAnimation->setDirection ( this->openTabWidget ? QAbstractAnimation::Forward : QAbstractAnimation::Backward );
-      this->setOpenTabWidget ( !this->openTabWidget );
-      this->toggleAnimation->start ();
-    }
-  } else {
-
-    if ( this->currentIndex () != this->previousIndex ) {
-
-      this->previousIndex = this->currentIndex ();
-    }
-  }
 }
 
 int TabWidget::getPreviousHeight () const {
@@ -322,7 +294,24 @@ void TabWidget::setTabPosition ( QTabWidget::TabPosition tabPosition ) {
 
 void TabWidget::launchAnimation () {
 
-  qDebug () << "Se hizo click en el tabbar";
+  if ( this->lockedTabWidget ) {
+
+    if ( this->currentIndex () != this->previousIndex ) {
+
+      this->previousIndex = this->currentIndex ();
+    }
+    if ( !this->openTabWidget ) {
+
+      this->uncollapsed ();
+      this->lockedTabWidget = true;
+    }
+  } else {
+
+    if ( this->currentIndex () != this->previousIndex ) {
+
+      this->previousIndex = this->currentIndex ();
+    }
+  }
 }
 
 void TabWidget::onDobleClick () {
@@ -377,6 +366,7 @@ void TabWidget::collapsed () {
     this->collapsedUnanimated ();
   }
   this->lockedTabWidget = true;
+  this->openTabWidget = false;
 }
 
 void TabWidget::uncollapsed () {
@@ -390,6 +380,7 @@ void TabWidget::uncollapsed () {
     this->uncollapsedUnanimated ();
   }
   this->lockedTabWidget = false;
+  this->openTabWidget = true;
 }
 
 void TabWidget::collapsedAnimated () {
@@ -450,58 +441,7 @@ void TabWidget::timerEvent ( QTimerEvent *timerEvent ) {
 
           qDebug () << "La animación no está detenida";
         }*/
-        /**
-         * entró por el norte línea 114
-         * this->previousHeight 149
-         * Aquí se detiene y pasa a hacer lo siguiente
-         * Entró por la línea 208
-         * this->previousHeight 149
-         * Entró por la línea 107
-         * entró por el norte línea 114
-         * this->previousHeight 252
-         *
-         *
-         *
-         * entró por el norte línea 114
-         * Aquí se detiene y pasa a hacer lo siguiente
-         * this->previousHeight 103
-         * Entró por la línea 208
-         * this->previousHeight 103
-         * Entró por la línea 107
-         * entró por el norte línea 114
-         * this->previousHeight 188
-         *
-         *
-         *
-         *
-         * Entró por la línea 107
-         * this->lockedTabWidget ------------------------------------------ false
-         * entró por el norte línea 114
-         * Aquí se detiene y pasa a hacer lo siguiente
-         * this->previousHeight 89
-         * Entró por la línea 208
-         * this->previousHeight 89
-         * Entró por la línea 107
-         * this->lockedTabWidget ------------------------------------------ false
-         * entró por el norte línea 114
-         * this->previousHeight 157
-         *
-         *
-         *
-         *
-         * Entró por la línea 107
-         * this->lockedTabWidget ------------------------------------------ false
-         * entró por el norte línea 114
-         * La animación está detenida
-         * this->previousHeight 117
-         * Entró por la línea 208
-         * this->previousHeight 117
-         * Entró por la línea 107
-         * this->lockedTabWidget ------------------------------------------ false
-         * entró por el norte línea 114
-         * La animación está detenida
-         * this->previousHeight 163
-         *//*
+        /*
         this->setAnimation ();
         this->setMinimumHeight ( 0 );
         this->setMaximumHeight ( 16777215 );

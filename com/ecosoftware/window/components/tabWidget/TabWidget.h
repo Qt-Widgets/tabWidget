@@ -3,7 +3,7 @@
 
 // Librerías Internas
 #include "TabWidget_global.h"
-#include "Corner.h"
+#include "CornerWidget.h"
 #include "TabBar.h"
 #include "ShowHideTabAct.h"
 
@@ -27,7 +27,7 @@
 #include <QWidget>
 */
 
-class Corner;
+class CornerWidget;
 
 namespace Com {
 
@@ -64,8 +64,8 @@ namespace Com {
     void setOpenTabWidget ( bool value );
     void setPreviousHeight ( int value );*/
 
-              void addAction ( QAction *action, TabWidget::CornerPosition cornerPosition );
-              TabWidget::CornerPosition getIndicatorPosition () const;
+              void addActionCorner ( QAction *action, TabWidget::CornerPosition cornerPosition );
+              TabWidget::CornerPosition getIndicatorPosition () const; // LISTO
               bool isAnimated () const; // LISTO
               bool isCollapsible () const; // LISTO
               bool isFloating () const;
@@ -83,32 +83,30 @@ namespace Com {
               void onDobleClick ();
 
             signals:
-              void toCollapse ( bool toCollapse );
+              void toCollapse ( bool toCollapse ); // LISTO
 
             protected:
               void leaveEvent ( QEvent *event ) Q_DECL_OVERRIDE;
-              void resizeEvent ( QResizeEvent *event ) Q_DECL_OVERRIDE;
+              void resizeEvent ( QResizeEvent *event ) Q_DECL_OVERRIDE; // LISTO
 
             private slots:
-              void onCollapse ( bool onCollapse );
+              void onCollapse ( bool onCollapse ); // LISTO
               void onStoppedAnimation (); // LISTO
 
             private:
               /*
-    bool openTabWidget = true;
-    int previousIndex;
     int timerId;
     bool finishedAnimation = false;*/
               /**
                * @brief cornerTopLeft
                * Esquina izquierda/superior del QTabWidget para las posiciones North/West del QTabBar
                */
-              Corner *cornerTopLeft = nullptr; // LISTO
+              CornerWidget *cornerTopLeft = nullptr; // LISTO
               /**
                * @brief cornerBottomRight
                * Esquina derecha/inferior del QTabWidget para las posiciones South/East del QTabBar
                */
-              Corner *cornerBottomRight = nullptr; // LISTO
+              CornerWidget *cornerBottomRight = nullptr; // LISTO
               /**
                * @brief collapsible
                * Indica si se puede expandir/contraer el QTabWidget.
@@ -147,14 +145,16 @@ namespace Com {
               QPropertyAnimation *uncollapsedAnimation = nullptr;
               TabBar *customTabBar = nullptr;
               bool lockedTabWidget = false;
+              int previousIndex = 0;
+              bool openTabWidget = true;
 
 
-              void collapsed ();
-              void uncollapsed ();
-              void collapsedAnimated ();
-              void collapsedUnanimated ();
-              void uncollapsedAnimated ();
-              void uncollapsedUnanimated ();
+              void collapsed (); // LISTO
+              void uncollapsed (); // LISTO
+              void collapsedAnimated (); // LISTO
+              void collapsedUnanimated (); // LISTO
+              void uncollapsedAnimated (); // LISTO
+              void uncollapsedUnanimated (); // LISTO
               void setAnimation ();
           };
         }

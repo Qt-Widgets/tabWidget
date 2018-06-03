@@ -21,7 +21,7 @@ MainWindow::MainWindow ( QWidget *parent ) : QMainWindow ( parent ) {
   //collapsibleTabWidget->setTabPosition ( QTabWidget::East );
   //collapsibleTabWidget->setTabPosition ( QTabWidget::West );
 
-  collapsibleTabWidget->setIndicatorPosition ( Com::Ecosoftware::Window::Components::TabWidget::TabWidget::Left );
+  //collapsibleTabWidget->setIndicatorPosition ( Com::Ecosoftware::Window::Components::TabWidget::TabWidget::Left );
 
   this->setCentralWidget ( collapsibleTabWidget );
 

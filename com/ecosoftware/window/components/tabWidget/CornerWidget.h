@@ -1,5 +1,5 @@
-#ifndef CORNER_H
-#define CORNER_H
+#ifndef CORNERWIDGET_H
+#define CORNERWIDGET_H
 
 // Librerias Internas
 #include "TabWidget_global.h"
@@ -28,17 +28,17 @@ namespace Com {
 
         namespace TabWidget {
 
-          class TABWIDGETSHARED_EXPORT Corner : public QWidget {
+          class TABWIDGETSHARED_EXPORT CornerWidget : public QWidget {
 
               Q_OBJECT
 
             public:
-              explicit Corner ( QTabWidget::TabPosition cornerPosition = QTabWidget::North, QWidget *parent = 0 );
+              explicit CornerWidget ( Qt::Corner cornerPosition, QTabWidget::TabPosition tabPosition = QTabWidget::North, QWidget *parent = 0 );
 
               void addAction ( QAction *action );
-              QTabWidget::TabPosition getCornerPosition () const;
-              void updateArrowDirection ();
-              void setCornerPosition ( const QTabWidget::TabPosition &value );
+              Qt::Corner getCornerPosition () const;
+              void updateArrowDirection ( bool checked );
+              void setCornerPosition ( const Qt::Corner &value );
 
             public slots:
               void toggleShowHideTabWidgetBtn ( bool checked );
@@ -46,7 +46,8 @@ namespace Com {
             private:
               QToolButton *showHideTabWidgetBtn;
               QBoxLayout *mainLayout;
-              QTabWidget::TabPosition cornerPosition;
+              Qt::Corner cornerPosition;
+              QTabWidget::TabPosition tabPosition;
 
           };
         }
@@ -55,4 +56,4 @@ namespace Com {
   }
 }
 
-#endif // CORNER_H
+#endif // CORNERWIDGET_H
