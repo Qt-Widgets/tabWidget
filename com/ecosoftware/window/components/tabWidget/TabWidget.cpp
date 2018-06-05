@@ -104,9 +104,18 @@ void TabWidget::collapsedAnimated () {
 
 void TabWidget::collapsedUnanimated () {
 
-  this->previousHeight = this->height ();
-  this->setMinimumHeight ( 0 );
-  this->setMaximumHeight ( this->tabBar ()->height () + 2 );
+  if ( ( this->tabPosition () == QTabWidget::North ) || ( this->tabPosition () == QTabWidget::South ) ) {
+
+    this->previousHeight = this->height ();
+    this->setMinimumHeight ( 0 );
+    this->setMaximumHeight ( this->tabBar ()->height () + 2 );
+
+  } else if ( ( this->tabPosition () == QTabWidget::East ) || ( this->tabPosition () == QTabWidget::West ) ) {
+
+    this->previousHeight = this->width ();
+    this->setMinimumWidth ( 0 );
+    this->setMaximumWidth ( this->tabBar ()->width () + 2 );
+  }
 }
 
 TabWidget::CornerPosition TabWidget::getIndicatorPosition () const {
@@ -206,7 +215,17 @@ void TabWidget::onStoppedAnimation () {
 void TabWidget::resizeEvent ( QResizeEvent *event ) {
 
   QTabWidget::resizeEvent ( event );
-  this->previousHeight = this->parentWidget ()->height ();
+
+  if ( ( this->tabPosition () == QTabWidget::North ) || ( this->tabPosition () == QTabWidget::South ) ) {
+
+    this->previousHeight = this->parentWidget ()->height ();
+
+  } else if ( ( this->tabPosition () == QTabWidget::East ) || ( this->tabPosition () == QTabWidget::West ) ) {
+
+    this->previousHeight = this->parentWidget ()->width ();
+  }
+
+  //this->previousHeight = this->parentWidget ()->height ();
   if ( this->isAnimated () ) {
 
     if ( ( this->collapsedAnimation == nullptr ) || ( this->uncollapsedAnimation == nullptr ) ) {
@@ -259,14 +278,24 @@ void TabWidget::setAnimation () {
 
         qDebug () << "Está entrando por el East LÍNEA 260";
         this->collapsedAnimation = new QPropertyAnimation ( this, "maximumWidth" );
+        this->collapsedAnimation->setStartValue ( this->previousHeight );
+        this->collapsedAnimation->setEndValue ( this->tabBar ()->width () + 2 );
+
         this->uncollapsedAnimation = new QPropertyAnimation ( this, "minimumWidth" );
+        this->uncollapsedAnimation->setStartValue ( this->tabBar ()->width () + 2 );
+        this->uncollapsedAnimation->setEndValue ( this->previousHeight );
         break;
 
       case QTabWidget::West:
 
         qDebug () << "Está entrando por el West LÍNEA 267";
         this->collapsedAnimation = new QPropertyAnimation ( this, "maximumWidth" );
+        this->collapsedAnimation->setStartValue ( this->previousHeight );
+        this->collapsedAnimation->setEndValue ( this->tabBar ()->width () + 2 );
+
         this->uncollapsedAnimation = new QPropertyAnimation ( this, "minimumWidth" );
+        this->uncollapsedAnimation->setStartValue ( this->tabBar ()->width () + 2 );
+        this->uncollapsedAnimation->setEndValue ( this->previousHeight );
         break;
 
       default:
@@ -421,18 +450,21 @@ void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
 
     case TabWidget::Top: {
 
+      qDebug () << "Entrando por la línea 424";
       // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
       //this->setCornerWidget ( this->corner, cornerPosition );
       break;
     }
     case TabWidget::Bottom: {
 
+      qDebug () << "Entrando por la línea 431";
       // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
       //this->setCornerWidget ( this->corner, cornerPosition );
       break;
     }
     case TabWidget::Left:
 
+      qDebug () << "Entrando por la línea 438";
       // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
       //this->setCornerWidget ( this->corner, cornerPosition );
       this->cornerTopLeft->addAction ( this->showHideTabAct );
@@ -440,6 +472,7 @@ void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
 
     case TabWidget::Right:
 
+      qDebug () << "Entrando por la línea 446";
       // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
       //this->setCornerWidget ( this->corner, cornerPosition );
       this->cornerBottomRight->addAction ( this->showHideTabAct );
@@ -447,6 +480,7 @@ void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
 
     default:
 
+      qDebug () << "Entrando por la línea 453";
       // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
       //this->setCornerWidget ( this->corner, cornerPosition );
       break;
@@ -481,9 +515,18 @@ void TabWidget::uncollapsedAnimated () {
 
 void TabWidget::uncollapsedUnanimated () {
 
-  this->setMinimumHeight ( this->previousHeight );
-  this->setMinimumHeight ( 0 );
-  this->setMaximumHeight ( 16777215 );
+  if ( ( this->tabPosition () == QTabWidget::North ) || ( this->tabPosition () == QTabWidget::South ) ) {
+
+    this->setMinimumHeight ( this->previousHeight );
+    this->setMinimumHeight ( 0 );
+    this->setMaximumHeight ( 16777215 );
+
+  } else if ( ( this->tabPosition () == QTabWidget::East ) || ( this->tabPosition () == QTabWidget::West ) ) {
+
+    this->setMinimumWidth ( this->previousHeight );
+    this->setMinimumWidth ( 0 );
+    this->setMaximumWidth ( 16777215 );
+  }
 }
 
 /*bool TabWidget::getLockedTabWidget () const {

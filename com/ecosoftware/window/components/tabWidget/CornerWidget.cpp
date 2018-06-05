@@ -66,18 +66,18 @@ void CornerWidget::updateArrowDirection ( bool checked ) {
           case Qt::TopLeftCorner:
           case Qt::BottomLeftCorner:
 
-            toolButton->setArrowType ( checked ? Qt::ArrowType::RightArrow : Qt::ArrowType::DownArrow );
+            toolButton->setArrowType ( checked ? Qt::ArrowType::RightArrow : Qt::ArrowType::UpArrow );
             break;
 
           case Qt::TopRightCorner:
           case Qt::BottomRightCorner:
 
-            toolButton->setArrowType ( checked ? Qt::ArrowType::LeftArrow : Qt::ArrowType::DownArrow );
+            toolButton->setArrowType ( checked ? Qt::ArrowType::LeftArrow : Qt::ArrowType::UpArrow );
             break;
 
           default:
 
-            toolButton->setArrowType ( checked ? Qt::ArrowType::LeftArrow : Qt::ArrowType::DownArrow );
+            toolButton->setArrowType ( checked ? Qt::ArrowType::LeftArrow : Qt::ArrowType::UpArrow );
             break;
         }
         break;
@@ -194,7 +194,33 @@ void CornerWidget::addAction ( QAction *action ) {
   toolBtn->setMinimumSize ( 16, 16 );
   if ( action->objectName ().compare ( "Com::Ecosoftware::Window::Components::TabWidget::ShowHideTabAct" ) == 0 ) {
 
-    toolBtn->setArrowType ( Qt::ArrowType::DownArrow );
+    switch ( ( ( QTabWidget * ) this->parentWidget () )->tabPosition () ) {
+
+      case QTabWidget::North:
+
+        toolBtn->setArrowType ( Qt::ArrowType::DownArrow );
+        break;
+
+      case QTabWidget::South:
+
+        toolBtn->setArrowType ( Qt::ArrowType::UpArrow );
+        break;
+
+      case QTabWidget::East:
+
+        toolBtn->setArrowType ( Qt::ArrowType::LeftArrow );
+        break;
+
+      case QTabWidget::West:
+
+        toolBtn->setArrowType ( Qt::ArrowType::RightArrow );
+        break;
+
+      default:
+
+        toolBtn->setArrowType ( Qt::ArrowType::DownArrow );
+        break;
+    }
     connect ( toolBtn, SIGNAL ( toggled ( bool ) ), this, SLOT ( toggleShowHideTabWidgetBtn ( bool ) ) );
   }
   this->mainLayout->addWidget ( toolBtn );
