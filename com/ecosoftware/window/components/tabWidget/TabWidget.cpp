@@ -113,6 +113,7 @@ void TabWidget::collapsedUnanimated () {
   } else if ( ( this->tabPosition () == QTabWidget::East ) || ( this->tabPosition () == QTabWidget::West ) ) {
 
     this->previousHeight = this->width ();
+    qDebug () << "this->tabBar ()->width ()" << this->tabBar ()->width ();
     this->setMinimumWidth ( 0 );
     this->setMaximumWidth ( this->tabBar ()->width () + 2 );
   }
@@ -215,7 +216,7 @@ void TabWidget::onStoppedAnimation () {
 void TabWidget::resizeEvent ( QResizeEvent *event ) {
 
   QTabWidget::resizeEvent ( event );
-
+  this->resize ( 0, 0 );
   if ( ( this->tabPosition () == QTabWidget::North ) || ( this->tabPosition () == QTabWidget::South ) ) {
 
     this->previousHeight = this->parentWidget ()->height ();
@@ -223,6 +224,9 @@ void TabWidget::resizeEvent ( QResizeEvent *event ) {
   } else if ( ( this->tabPosition () == QTabWidget::East ) || ( this->tabPosition () == QTabWidget::West ) ) {
 
     this->previousHeight = this->parentWidget ()->width ();
+    qDebug () << "this->tabBar ()->width ()" << this->tabBar ()->width ();
+    qDebug () << "this->tabBar ()->height ()" << this->tabBar ()->height ();
+    qDebug () << "this->previousHeight" << this->previousHeight;
   }
 
   //this->previousHeight = this->parentWidget ()->height ();
@@ -288,13 +292,15 @@ void TabWidget::setAnimation () {
 
       case QTabWidget::West:
 
-        qDebug () << "Está entrando por el West LÍNEA 267";
+        qDebug () << "Está entrando por el West LÍNEA 291";
+        qDebug () << "this->tabBar ()->width ()" << this->tabBar ()->width ();
+        qDebug () << "this->tabBar ()->height ()" << this->tabBar ()->height ();
         this->collapsedAnimation = new QPropertyAnimation ( this, "maximumWidth" );
         this->collapsedAnimation->setStartValue ( this->previousHeight );
-        this->collapsedAnimation->setEndValue ( this->tabBar ()->width () + 2 );
+        this->collapsedAnimation->setEndValue ( this->tabBar ()->height () + 2 );
 
         this->uncollapsedAnimation = new QPropertyAnimation ( this, "minimumWidth" );
-        this->uncollapsedAnimation->setStartValue ( this->tabBar ()->width () + 2 );
+        this->uncollapsedAnimation->setStartValue ( this->tabBar ()->height () + 2 );
         this->uncollapsedAnimation->setEndValue ( this->previousHeight );
         break;
 
@@ -523,6 +529,7 @@ void TabWidget::uncollapsedUnanimated () {
 
   } else if ( ( this->tabPosition () == QTabWidget::East ) || ( this->tabPosition () == QTabWidget::West ) ) {
 
+    qDebug () << "this->tabBar ()->width ()" << this->tabBar ()->width ();
     this->setMinimumWidth ( this->previousHeight );
     this->setMinimumWidth ( 0 );
     this->setMaximumWidth ( 16777215 );
