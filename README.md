@@ -14,7 +14,7 @@ TabWidget has the following characteristics:
 
 Por ahora solo funciona correctamente con TabPosition::North, para TabPosition::South el comportamiento no es el deseable y como la documentación lo dice, "Los widgets de esquina están diseñados para las posiciones de pestañas norte y sur; se sabe que otras orientaciones no funcionan correctamente.", y este intento por extender funcionalidades al QTabWidget no es la excepción, por lo que las posiciones TabPosition::West y TabPosition::East no funcionan.
 
-(For now it only works correctly with TabPosition :: North, for TabPosition :: South the behavior is not desirable and as the documentation says, "The corner widgets are designed for the north and south tab positions, it is known that other orientations they do not work properly. ", and this attempt to extend functionality to the QTabWidget is no exception, so the TabPosition :: West and TabPosition :: East positions do not work).
+(For now it only works correctly with TabPosition::North, for TabPosition::South the behavior is not desirable and as the documentation says, "The corner widgets are designed for the north and south tab positions, it is known that other orientations they do not work properly.", and this attempt to extend functionality to the QTabWidget is no exception, so the TabPosition::West and TabPosition::East positions do not work).
 
 ### TODO
 
