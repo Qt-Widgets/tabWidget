@@ -79,14 +79,14 @@ namespace Com {
               //void timerEvent ( QTimerEvent *timerEvent ) Q_DECL_OVERRIDE;
 
             public slots:
-              void launchAnimation ();
-              void onDobleClick ();
+              void launchAnimation (); // LISTO
+              void onDobleClick (); // LISTO
 
             signals:
               void toCollapse ( bool toCollapse ); // LISTO
 
             protected:
-              void leaveEvent ( QEvent *event ) Q_DECL_OVERRIDE;
+              void leaveEvent ( QEvent *event ) Q_DECL_OVERRIDE; // LISTO
               void resizeEvent ( QResizeEvent *event ) Q_DECL_OVERRIDE; // LISTO
 
             private slots:
