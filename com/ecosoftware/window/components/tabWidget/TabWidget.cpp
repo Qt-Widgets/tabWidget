@@ -5,7 +5,6 @@ using namespace Com::Ecosoftware::Window::Components::TabWidget;
 
 TabWidget::TabWidget ( bool collapsible, bool animated, TabPosition tabPosition, QWidget *parent ) : QTabWidget ( parent ) {
 
-  // TODO: En algún punto hay que hacer lo del ejemplo del WidgetResize
   // TODO: Por si desaparece el cornerWidget
   // https://stackoverflow.com/questions/18144626/qtabwidget-corner-qtoolbutton-widget-disappearing
   // http://www.qtcentre.org/threads/12539-QTabWidget-corner-widget-is-not-shown
@@ -40,10 +39,6 @@ TabWidget::TabWidget ( bool collapsible, bool animated, TabPosition tabPosition,
   this->setAnimated ( animated );
   this->setMinimumHeight ( 0 );
   this->setCurrentIndex ( 0 );
-
-  //this->timerId = 0;
-  //this->setSizePolicy ( QSizePolicy::Expanding, QSizePolicy::Expanding );
-
   connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( setCurrentIndex ( int ) ) );
   connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( launchAnimation () ) );
   connect ( this, SIGNAL ( toCollapse ( bool ) ), this, SLOT ( onCollapse ( bool ) ) );
@@ -113,7 +108,6 @@ void TabWidget::collapsedUnanimated () {
   } else if ( ( this->tabPosition () == QTabWidget::East ) || ( this->tabPosition () == QTabWidget::West ) ) {
 
     this->previousHeight = this->width ();
-    qDebug () << "this->tabBar ()->width ()" << this->tabBar ()->width ();
     this->setMinimumWidth ( 0 );
     this->setMaximumWidth ( this->tabBar ()->width () + 2 );
   }
@@ -208,15 +202,22 @@ void TabWidget::onStoppedAnimation () {
 
   } else if ( ( ( QPropertyAnimation * ) QObject::sender () )->objectName ().compare ( "uncollapsedAnimation" ) == 0 ) {
 
-    this->setMinimumHeight ( 0 );
-    this->setMaximumHeight ( 16777215 );
+    if ( ( this->tabPosition () == QTabWidget::North ) || ( this->tabPosition () == QTabWidget::South ) ) {
+
+      this->setMinimumHeight ( 0 );
+      this->setMaximumHeight ( 16777215 );
+
+    } else if ( ( this->tabPosition () == QTabWidget::East ) || ( this->tabPosition () == QTabWidget::West ) ) {
+
+      this->setMinimumWidth ( 0 );
+      this->setMaximumWidth ( 16777215 );
+    }
   }
 }
 
 void TabWidget::resizeEvent ( QResizeEvent *event ) {
 
   QTabWidget::resizeEvent ( event );
-  this->resize ( 0, 0 );
   if ( ( this->tabPosition () == QTabWidget::North ) || ( this->tabPosition () == QTabWidget::South ) ) {
 
     this->previousHeight = this->parentWidget ()->height ();
@@ -224,12 +225,7 @@ void TabWidget::resizeEvent ( QResizeEvent *event ) {
   } else if ( ( this->tabPosition () == QTabWidget::East ) || ( this->tabPosition () == QTabWidget::West ) ) {
 
     this->previousHeight = this->parentWidget ()->width ();
-    qDebug () << "this->tabBar ()->width ()" << this->tabBar ()->width ();
-    qDebug () << "this->tabBar ()->height ()" << this->tabBar ()->height ();
-    qDebug () << "this->previousHeight" << this->previousHeight;
   }
-
-  //this->previousHeight = this->parentWidget ()->height ();
   if ( this->isAnimated () ) {
 
     if ( ( this->collapsedAnimation == nullptr ) || ( this->uncollapsedAnimation == nullptr ) ) {
@@ -242,6 +238,21 @@ void TabWidget::resizeEvent ( QResizeEvent *event ) {
       this->collapsedAnimation->setStartValue ( this->previousHeight );
     }
   }
+}
+
+void TabWidget::showEvent ( QShowEvent *event ) {
+
+  Q_UNUSED ( event )
+  if ( ( this->tabPosition () == QTabWidget::North ) || ( this->tabPosition () == QTabWidget::South ) ) {
+
+    this->minimunValue = this->tabBar ()->height () + 2;
+
+  } else if ( ( this->tabPosition () == QTabWidget::East ) || ( this->tabPosition () == QTabWidget::West ) ) {
+
+    this->minimunValue = this->tabBar ()->width () + 2;
+  }
+  this->collapsedAnimation->setEndValue ( this->minimunValue );
+  this->uncollapsedAnimation->setStartValue ( this->minimunValue );
 }
 
 void TabWidget::setAnimated ( bool value ) {
@@ -258,55 +269,46 @@ void TabWidget::setAnimation () {
 
       case QTabWidget::North:
 
-        qDebug () << "Está entrando por el North LÍNEA 238";
         this->collapsedAnimation = new QPropertyAnimation ( this, "maximumHeight" );
         this->collapsedAnimation->setStartValue ( this->previousHeight );
-        this->collapsedAnimation->setEndValue ( this->tabBar ()->height () + 2 );
+        this->collapsedAnimation->setEndValue ( this->minimunValue );
         this->uncollapsedAnimation = new QPropertyAnimation ( this, "minimumHeight" );
-        this->uncollapsedAnimation->setStartValue ( this->tabBar ()->height () + 2 );
+        this->uncollapsedAnimation->setStartValue ( this->minimunValue );
         this->uncollapsedAnimation->setEndValue ( this->previousHeight );
         break;
 
       case QTabWidget::South:
 
-        qDebug () << "Está entrando por el South LÍNEA 249";
         this->collapsedAnimation = new QPropertyAnimation ( this, "maximumHeight" );
         this->collapsedAnimation->setStartValue ( this->previousHeight );
-        this->collapsedAnimation->setEndValue ( this->tabBar ()->height () + 2 );
+        this->collapsedAnimation->setEndValue ( this->minimunValue );
         this->uncollapsedAnimation = new QPropertyAnimation ( this, "minimumHeight" );
-        this->uncollapsedAnimation->setStartValue ( this->tabBar ()->height () + 2 );
+        this->uncollapsedAnimation->setStartValue ( this->minimunValue );
         this->uncollapsedAnimation->setEndValue ( this->previousHeight );
         break;
 
       case QTabWidget::East:
 
-        qDebug () << "Está entrando por el East LÍNEA 260";
         this->collapsedAnimation = new QPropertyAnimation ( this, "maximumWidth" );
         this->collapsedAnimation->setStartValue ( this->previousHeight );
-        this->collapsedAnimation->setEndValue ( this->tabBar ()->width () + 2 );
-
+        this->collapsedAnimation->setEndValue ( this->minimunValue );
         this->uncollapsedAnimation = new QPropertyAnimation ( this, "minimumWidth" );
-        this->uncollapsedAnimation->setStartValue ( this->tabBar ()->width () + 2 );
+        this->uncollapsedAnimation->setStartValue ( this->minimunValue );
         this->uncollapsedAnimation->setEndValue ( this->previousHeight );
         break;
 
       case QTabWidget::West:
 
-        qDebug () << "Está entrando por el West LÍNEA 291";
-        qDebug () << "this->tabBar ()->width ()" << this->tabBar ()->width ();
-        qDebug () << "this->tabBar ()->height ()" << this->tabBar ()->height ();
         this->collapsedAnimation = new QPropertyAnimation ( this, "maximumWidth" );
         this->collapsedAnimation->setStartValue ( this->previousHeight );
-        this->collapsedAnimation->setEndValue ( this->tabBar ()->height () + 2 );
-
+        this->collapsedAnimation->setEndValue ( this->minimunValue );
         this->uncollapsedAnimation = new QPropertyAnimation ( this, "minimumWidth" );
-        this->uncollapsedAnimation->setStartValue ( this->tabBar ()->height () + 2 );
+        this->uncollapsedAnimation->setStartValue ( this->minimunValue );
         this->uncollapsedAnimation->setEndValue ( this->previousHeight );
         break;
 
       default:
 
-        qDebug () << "Está entrando por el default LÍNEA 274";
         this->collapsedAnimation = new QPropertyAnimation ( this, "maximumHeight" );
         this->collapsedAnimation->setStartValue ( this->previousHeight );
         this->collapsedAnimation->setEndValue ( this->tabBar ()->height () + 2 );
@@ -315,20 +317,12 @@ void TabWidget::setAnimation () {
         this->uncollapsedAnimation->setEndValue ( this->previousHeight );
         break;
     }
-    //this->uncollapsedAnimation = new QPropertyAnimation ( this, "minimumHeight" );
     this->uncollapsedAnimation->setObjectName ( "uncollapsedAnimation" );
     this->uncollapsedAnimation->setDuration ( 500 );
     this->uncollapsedAnimation->setEasingCurve ( QEasingCurve::OutBounce );
-    //this->uncollapsedAnimation->setStartValue ( this->tabBar ()->height () + 2 );
-    //this->uncollapsedAnimation->setEndValue ( this->previousHeight );
-
-    //this->collapsedAnimation = new QPropertyAnimation ( this, "maximumHeight" );
     this->collapsedAnimation->setObjectName ( "collapsedAnimation" );
     this->collapsedAnimation->setDuration ( 500 );
     this->collapsedAnimation->setEasingCurve ( QEasingCurve::OutBounce );
-    //this->collapsedAnimation->setStartValue ( this->previousHeight );
-    //this->collapsedAnimation->setEndValue ( this->tabBar ()->height () + 2 );
-
     connect ( this->collapsedAnimation, SIGNAL ( finished () ), this, SLOT ( onStoppedAnimation () ) );
     connect ( this->uncollapsedAnimation, SIGNAL ( finished () ), this, SLOT ( onStoppedAnimation () ) );
 
@@ -529,7 +523,6 @@ void TabWidget::uncollapsedUnanimated () {
 
   } else if ( ( this->tabPosition () == QTabWidget::East ) || ( this->tabPosition () == QTabWidget::West ) ) {
 
-    qDebug () << "this->tabBar ()->width ()" << this->tabBar ()->width ();
     this->setMinimumWidth ( this->previousHeight );
     this->setMinimumWidth ( 0 );
     this->setMaximumWidth ( 16777215 );
@@ -554,208 +547,6 @@ int TabWidget::getPreviousHeight () const {
 void TabWidget::setPreviousHeight ( int value ) {
 
   this->previousHeight = value;
-}*/
-
-/*
-void TabWidget::timerEvent ( QTimerEvent *timerEvent ) {
-
-  qDebug () << "Entró por la línea 107";
-  qDebug () << "this->lockedTabWidget ------------------------------------------" << this->lockedTabWidget;
-  if ( !this->lockedTabWidget ) {
-
-    switch ( this->tabPosition () ) {
-
-      case QTabWidget::North:
-
-        if ( !this->finishedAnimation ) {
-
-          this->previousHeight = this->geometry ().height ();
-
-        } else {
-
-          this->parentWidget ()->setGeometry ( this->parentWidget ()->geometry ().x (), this->parentWidget ()->geometry ().y (), this->parentWidget ()->geometry ().width (), this->previousHeight );
-        }
-        qDebug () << "entró por el norte línea 114";
-        //this->previousHeight = this->geometry ().height ();
-        qDebug () << "this->geometry ().height () línea 117" << this->geometry ().height ();
-        qDebug () << "this->previousHeight línea 118" << this->previousHeight;
-        QThread::msleep ( 5000 );
-        /*if ( ( this->toggleAnimation->state () == QAbstractAnimation::Stopped ) && ( this->toggleAnimation->direction () == QAbstractAnimation::Backward ) ) {
-
-          qDebug () << "La animación está detenida y va en retoceso";
-          //this->parentWidget ()->setGeometry ( this->parentWidget ()->x (), this->parentWidget ()->y (), this->parentWidget ()->width (), this->previousHeight );
-
-
-        } else {
-
-          qDebug () << "La animación no está detenida";
-        }*/
-        /*
-        this->setAnimation ();
-        this->setMinimumHeight ( 0 );
-        this->setMaximumHeight ( 16777215 );
-        break;
-
-      case QTabWidget::South:
-
-        qDebug () << "entró por el sur línea 123";
-        this->previousHeight = this->geometry ().height ();
-        this->setAnimation ();
-        this->setMinimumHeight ( 0 );
-        this->setMaximumHeight ( 16777215 );
-        break;
-
-      case QTabWidget::East:
-
-        qDebug () << "entró por el este línea 132";
-        this->previousHeight = this->geometry ().width ();
-        this->setAnimation ();
-        this->setMinimumWidth ( 0 );
-        this->setMaximumWidth ( 16777215 );
-        break;
-
-      case QTabWidget::West:
-
-        qDebug () << "entró por el oeste línea 141";
-        this->previousHeight = this->geometry ().width ();
-        this->setAnimation ();
-        this->setMinimumWidth ( 0 );
-        this->setMaximumWidth ( 16777215 );
-        break;
-
-      default:
-        break;
-    }
-  } else {
-
-    switch ( this->tabPosition () ) {
-
-      case QTabWidget::North:
-
-        qDebug () << "entró por el norte línea 157";
-        if ( this->maximumHeight () != this->parentWidget ()->geometry ().height () ) {
-
-          this->setAnimation ();
-        }
-        break;
-
-      case QTabWidget::South:
-
-        qDebug () << "entró por el sur línea 166";
-        if ( this->maximumHeight () != this->parentWidget ()->geometry ().height () ) {
-
-          this->setAnimation ();
-        }
-        break;
-
-      case QTabWidget::East:
-
-        qDebug () << "entró por el este línea 175";
-        if ( this->maximumWidth () != this->parentWidget ()->geometry ().width () ) {
-
-          this->setAnimation ();
-        }
-        break;
-
-      case QTabWidget::West:
-
-        qDebug () << "entró por el oeste línea 184";
-        if ( this->maximumWidth () != this->parentWidget ()->geometry ().width () ) {
-
-          this->setAnimation ();
-        }
-        break;
-
-      default:
-
-        qDebug () << "entró por la línea 184";
-        if ( this->maximumHeight () != this->parentWidget ()->geometry ().height () ) {
-
-          this->setAnimation ();
-        }
-        break;
-    }
-  }
-  this->killTimer ( timerEvent->timerId () );
-  this->timerId = 0;
-  qDebug () << "this->previousHeight línea 267" << this->previousHeight;
-}*/
-
-/*void TabWidget::setAnimation () {
-
-  /*switch ( this->tabPosition () ) {
-
-    case QTabWidget::North: {
-
-      this->toggleAnimation->addAnimation ( new QPropertyAnimation ( this, "minimumHeight" ) );
-      this->toggleAnimation->addAnimation ( new QPropertyAnimation ( this, "maximumHeight" ) );
-      QPropertyAnimation *SectionAnimation = static_cast<QPropertyAnimation *> ( this->toggleAnimation->animationAt ( 0 ) );
-      SectionAnimation->setDuration ( 300 );
-      SectionAnimation->setStartValue ( this->previousHeight );
-      SectionAnimation->setEndValue ( 0 );
-      QPropertyAnimation* contentAnimation = static_cast<QPropertyAnimation *> ( this->toggleAnimation->animationAt ( 1 ) );
-      contentAnimation->setDuration ( 300 );
-      contentAnimation->setStartValue ( 0 );
-      contentAnimation->setEndValue ( this->tabBar ()->height () );
-      break;
-    }
-    case QTabWidget::South: {
-
-      this->toggleAnimation->addAnimation ( new QPropertyAnimation ( this, "minimumHeight" ) );
-      this->toggleAnimation->addAnimation ( new QPropertyAnimation ( this, "maximumHeight" ) );
-      QPropertyAnimation *SectionAnimation = static_cast<QPropertyAnimation *> ( this->toggleAnimation->animationAt ( 0 ) );
-      SectionAnimation->setDuration ( 300 );
-      SectionAnimation->setStartValue ( this->previousHeight );
-      SectionAnimation->setEndValue ( 0 );
-      QPropertyAnimation* contentAnimation = static_cast<QPropertyAnimation *> ( this->toggleAnimation->animationAt ( 1 ) );
-      contentAnimation->setDuration ( 300 );
-      contentAnimation->setStartValue ( 0 );
-      contentAnimation->setEndValue ( this->tabBar ()->height () );
-      break;
-    }
-    case QTabWidget::East: {
-
-      this->toggleAnimation->addAnimation ( new QPropertyAnimation ( this, "minimumWidth" ) );
-      this->toggleAnimation->addAnimation ( new QPropertyAnimation ( this, "maximumWidth" ) );
-      QPropertyAnimation *SectionAnimation = static_cast<QPropertyAnimation *> ( this->toggleAnimation->animationAt ( 0 ) );
-      SectionAnimation->setDuration ( 300 );
-      SectionAnimation->setStartValue ( this->previousHeight );
-      SectionAnimation->setEndValue ( 0 );
-      QPropertyAnimation* contentAnimation = static_cast<QPropertyAnimation *> ( this->toggleAnimation->animationAt ( 1 ) );
-      contentAnimation->setDuration ( 300 );
-      contentAnimation->setStartValue ( 0 );
-      contentAnimation->setEndValue ( this->tabBar ()->height () );
-      break;
-    }
-    case QTabWidget::West: {
-
-      this->toggleAnimation->addAnimation ( new QPropertyAnimation ( this, "minimumWidth" ) );
-      this->toggleAnimation->addAnimation ( new QPropertyAnimation ( this, "maximumWidth" ) );
-      QPropertyAnimation *SectionAnimation = static_cast<QPropertyAnimation *> ( this->toggleAnimation->animationAt ( 0 ) );
-      SectionAnimation->setDuration ( 300 );
-      SectionAnimation->setStartValue ( this->previousHeight );
-      SectionAnimation->setEndValue ( 0 );
-      QPropertyAnimation* contentAnimation = static_cast<QPropertyAnimation *> ( this->toggleAnimation->animationAt ( 1 ) );
-      contentAnimation->setDuration ( 300 );
-      contentAnimation->setStartValue ( 0 );
-      contentAnimation->setEndValue ( this->tabBar ()->height () );
-      break;
-    }
-    default:
-      break;
-  }*/
-/*
-  for ( int i = 0; i < toggleAnimation->animationCount () - 1; ++i ) {
-
-    QPropertyAnimation *SectionAnimation = static_cast<QPropertyAnimation *> ( this->toggleAnimation->animationAt ( i ) );
-    SectionAnimation->setDuration ( 300 );
-    SectionAnimation->setStartValue ( this->previousHeight );
-    SectionAnimation->setEndValue ( 0 );
-  }
-  QPropertyAnimation* contentAnimation = static_cast<QPropertyAnimation *> ( this->toggleAnimation->animationAt ( this->toggleAnimation->animationCount () - 1 ) );
-  contentAnimation->setDuration ( 300 );
-  contentAnimation->setStartValue ( 0 );
-  contentAnimation->setEndValue ( this->tabBar ()->height () );
 }
 
 void TabWidget::setCornerWidget ( QWidget *widget, Qt::Corner corner ) {

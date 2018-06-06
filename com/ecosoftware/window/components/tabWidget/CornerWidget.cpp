@@ -23,11 +23,7 @@ CornerWidget::CornerWidget ( Qt::Corner cornerPosition, QTabWidget::TabPosition 
 
 void CornerWidget::updateArrowDirection ( bool checked ) {
 
-  qDebug () << "checked" << checked;
-  qDebug () << "Si está entrando por el updateArrowDirection";
   QToolButton *toolButton = this->findChild<QToolButton *> ( "Com::Ecosoftware::Window::Components::TabWidget::ShowHideTabActBtn" );
-  // TODO: aquí identificar primero la posición de las pestañas y luego el cornerPosition
-
   if ( toolButton ) {
 
     QAction *defaultAction = toolButton->defaultAction ();
@@ -157,16 +153,6 @@ void CornerWidget::updateArrowDirection ( bool checked ) {
 void CornerWidget::toggleShowHideTabWidgetBtn ( bool checked ) {
 
   this->updateArrowDirection ( checked );
-
-  //qDebug () << ( ( CollapsibleTabWidget * ) this->parent () )->getOpenTabWidget ();
-  //if ( ( ( ( CollapsibleTabWidget * ) this->parent () )->getOpenTabWidget () ) && !( ( ( CollapsibleTabWidget * ) this->parent () )->getLockedTabWidget () ) ) {
-
-  /*QParallelAnimationGroup *toggleAnimation = ( ( TabWidget * ) this->parent () )->getToggleAnimation ();
-  toggleAnimation->setDirection ( checked ? QAbstractAnimation::Forward : QAbstractAnimation::Backward );
-  toggleAnimation->start ();
-  ( ( TabWidget * ) this->parent () )->setLockedTabWidget ( checked );
-  ( ( TabWidget * ) this->parent () )->setOpenTabWidget ( !checked );*/
-  //}
 }
 
 Qt::Corner CornerWidget::getCornerPosition () const {

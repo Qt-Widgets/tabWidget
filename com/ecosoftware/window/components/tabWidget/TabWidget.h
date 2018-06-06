@@ -13,6 +13,7 @@
 #include <QMouseEvent>
 #include <QPropertyAnimation>
 #include <QResizeEvent>
+#include <QShowEvent>
 #include <QTabBar>
 #include <QTabWidget>
 #include <QToolButton>
@@ -20,7 +21,6 @@
 #include <QFlags>
 #include <QFocusEvent>
 #include <QHBoxLayout>
-#include <QShowEvent>
 #include <QSizePolicy>
 #include <QString>
 #include <QTimerEvent>
@@ -88,6 +88,7 @@ namespace Com {
             protected:
               void leaveEvent ( QEvent *event ) Q_DECL_OVERRIDE; // LISTO
               void resizeEvent ( QResizeEvent *event ) Q_DECL_OVERRIDE; // LISTO
+              void showEvent ( QShowEvent *event ) Q_DECL_OVERRIDE; // LISTO
 
             private slots:
               void onCollapse ( bool onCollapse ); // LISTO
@@ -146,6 +147,7 @@ namespace Com {
               TabBar *customTabBar = nullptr;
               bool lockedTabWidget = false;
               int previousIndex = 0;
+              int minimunValue = 0;
               bool openTabWidget = true;
 
 
