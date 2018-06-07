@@ -7,6 +7,5 @@ TabBar::TabBar ( QWidget *parent ) : QTabBar ( parent ) {}
 
 void TabBar::mouseDoubleClickEvent ( QMouseEvent *event ) {
 
-  qDebug () << "Se hizo docle click en el tabbar";
   emit onDobleClick ();
 }

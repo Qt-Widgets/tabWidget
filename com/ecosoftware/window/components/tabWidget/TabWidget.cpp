@@ -42,13 +42,12 @@ TabWidget::TabWidget ( bool collapsible, bool animated, TabPosition tabPosition,
   connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( setCurrentIndex ( int ) ) );
   connect ( this, SIGNAL ( tabBarClicked ( int ) ), this, SLOT ( launchAnimation () ) );
   connect ( this, SIGNAL ( toCollapse ( bool ) ), this, SLOT ( onCollapse ( bool ) ) );
-  connect ( this, SIGNAL ( toCollapse ( bool ) ), this->cornerTopLeft, SLOT ( toggleShowHideTabWidgetBtn ( bool ) ) );
-  connect ( this, SIGNAL ( toCollapse ( bool ) ), this->cornerBottomRight, SLOT ( toggleShowHideTabWidgetBtn ( bool ) ) );
+  connect ( this, SIGNAL ( toCollapse ( bool ) ), this->cornerTopLeft, SLOT ( onToggle ( bool ) ) );
+  connect ( this, SIGNAL ( toCollapse ( bool ) ), this->cornerBottomRight, SLOT ( onToggle ( bool ) ) );
 }
 
 void TabWidget::addActionCorner ( QAction *action, TabWidget::CornerPosition cornerPosition ) {
 
-  qDebug () << "Está entrando por el addAction del TabWidget";
   switch ( cornerPosition ) {
 
     case TabWidget::Top:
@@ -73,7 +72,7 @@ void TabWidget::addActionCorner ( QAction *action, TabWidget::CornerPosition cor
 
     default:
 
-      this->cornerBottomRight->addAction ( action );
+      //this->cornerBottomRight->addAction ( action );
       break;
   }
 }
@@ -131,6 +130,16 @@ bool TabWidget::isCollapsible () const {
 bool TabWidget::isFloating () const {
 
   return this->floating;
+}
+
+bool TabWidget::isTabLocked () const {
+
+  return this->lockedTabWidget;
+}
+
+bool TabWidget::isTabOpened () const {
+
+  return this->openTabWidget;
 }
 
 void TabWidget::launchAnimation () {
@@ -215,6 +224,48 @@ void TabWidget::onStoppedAnimation () {
   }
 }
 
+void TabWidget::removeShowHideBtn () {
+
+  QToolButton *toolButton;
+  QString objectNameBtn = "Com::Ecosoftware::Window::Components::TabWidget::ShowHideTabActBtn";
+  switch ( this->indicatorPosition ) {
+
+    case TabWidget::Top:
+    case TabWidget::Left:
+
+      toolButton = this->cornerTopLeft->findChild<QToolButton *> ( objectNameBtn );
+      if ( toolButton != 0 ) {
+
+        this->cornerTopLeft->layout ()->removeWidget ( toolButton );
+      }
+      break;
+
+    case TabWidget::Bottom:
+    case TabWidget::Right:
+
+      toolButton = this->cornerBottomRight->findChild<QToolButton *> ( objectNameBtn );
+      if ( toolButton != 0 ) {
+
+        this->cornerBottomRight->layout ()->removeWidget ( toolButton );
+      }
+      break;
+
+    default:
+
+      toolButton = this->cornerBottomRight->findChild<QToolButton *> ( objectNameBtn );
+      if ( toolButton != 0 ) {
+
+        this->cornerBottomRight->layout ()->removeWidget ( toolButton );
+      }
+      break;
+  }
+  if ( toolButton != 0 ) {
+
+    delete toolButton;
+    toolButton = nullptr;
+  }
+}
+
 void TabWidget::resizeEvent ( QResizeEvent *event ) {
 
   QTabWidget::resizeEvent ( event );
@@ -238,21 +289,6 @@ void TabWidget::resizeEvent ( QResizeEvent *event ) {
       this->collapsedAnimation->setStartValue ( this->previousHeight );
     }
   }
-}
-
-void TabWidget::showEvent ( QShowEvent *event ) {
-
-  Q_UNUSED ( event )
-  if ( ( this->tabPosition () == QTabWidget::North ) || ( this->tabPosition () == QTabWidget::South ) ) {
-
-    this->minimunValue = this->tabBar ()->height () + 2;
-
-  } else if ( ( this->tabPosition () == QTabWidget::East ) || ( this->tabPosition () == QTabWidget::West ) ) {
-
-    this->minimunValue = this->tabBar ()->width () + 2;
-  }
-  this->collapsedAnimation->setEndValue ( this->minimunValue );
-  this->uncollapsedAnimation->setStartValue ( this->minimunValue );
 }
 
 void TabWidget::setAnimated ( bool value ) {
@@ -341,32 +377,42 @@ void TabWidget::setAnimation () {
 void TabWidget::setCollapsible ( bool value ) {
 
   this->collapsible = value;
-  // TODO: Aquí activar/desactivar la contracción de las pestañas.
-  // TODO: Inicialmente se asigna el indicador del lado derecho.
-  qDebug () << "Está entrando por el setCollapsible";
-  // if ( ( this->collapsible ) && ( this->showHideAct = nullptr ) )
   if ( this->collapsible ) {
 
     if ( this->showHideTabAct == nullptr ) {
 
-      // TODO: Crear la acción.
       this->showHideTabAct = new ShowHideTabAct ( "Collapse", this );
       connect ( this->showHideTabAct, SIGNAL ( triggered ( bool ) ), this, SLOT ( onCollapse ( bool ) ) );
-      qDebug () << "Está creando la acción";
 
     } else {
 
-      // TODO: Lanzar el setIndicatorPosition
-      // Quiere decir que se ha removido de las esquinas y está oculto, validar que sea así.
-    }
-    //this->setIndicatorPosition ( TabWidget::Left );
-    this->setIndicatorPosition ( TabWidget::Right );
+      switch ( this->tabPosition () ) {
 
+        case QTabWidget::North:
+        case QTabWidget::South:
+
+          this->setIndicatorPosition ( TabWidget::Right );
+          break;
+
+        case QTabWidget::East:
+        case QTabWidget::West:
+
+          this->setIndicatorPosition ( TabWidget::Top );
+          break;
+
+        default:
+
+          this->setIndicatorPosition ( TabWidget::Right );
+          break;
+      }
+    }
   } else {
 
     if ( this->showHideTabAct != nullptr ) {
 
-      // TODO: Buscarlo y ocultarlo y quitarlo de la esquina donde se encuentre ubicado.
+      this->removeShowHideBtn ();
+      this->setIndicatorPosition ( TabWidget::None );
+      this->setAnimated ( false );
     }
   }
 }
@@ -396,43 +442,15 @@ void TabWidget::setFloating ( bool value ) {
 
 void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
 
-  qDebug () << "Está entrando al setIndicatorPosition";
-
   if ( this->isCollapsible () ) {
 
     if ( this->indicatorPosition != CornerPosition::None ) {
 
-      QToolButton *toolButton;
-      QString objectNameBtn = "Com::Ecosoftware::Window::Components::TabWidget::ShowHideTabActBtn";
-      switch ( this->indicatorPosition ) {
-//908124
-        case TabWidget::Top:
-        case TabWidget::Left:
-
-          toolButton = this->cornerTopLeft->findChild<QToolButton *> ( objectNameBtn );
-          break;
-
-        case TabWidget::Bottom:
-        case TabWidget::Right:
-
-          toolButton = this->cornerBottomRight->findChild<QToolButton *> ( objectNameBtn );
-          break;
-
-        default:
-
-          toolButton = this->cornerBottomRight->findChild<QToolButton *> ( objectNameBtn );
-          break;
-      }
-      if ( toolButton != 0 ) {
-
-        qDebug () << "Si hay botones del lado SUPERIOR";
-      }
-
+      this->removeShowHideBtn ();
 
     } else {
 
       this->indicatorPosition = cornerPosition;
-      // TODO: Aquí se agrega la acción en la esquina indicada.
     }
     switch ( cornerPosition ) {
 
@@ -450,7 +468,7 @@ void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
 
       default:
 
-        this->cornerBottomRight->addAction ( this->showHideTabAct );
+        //this->cornerBottomRight->addAction ( this->showHideTabAct );
         break;
     }
   }
@@ -460,6 +478,21 @@ void TabWidget::setTabPosition ( QTabWidget::TabPosition tabPosition ) {
 
   QTabWidget::setTabPosition ( tabPosition );
   //this->corner->updateArrowDirection ();
+}
+
+void TabWidget::showEvent ( QShowEvent *event ) {
+
+  Q_UNUSED ( event )
+  if ( ( this->tabPosition () == QTabWidget::North ) || ( this->tabPosition () == QTabWidget::South ) ) {
+
+    this->minimunValue = this->tabBar ()->height () + 2;
+
+  } else if ( ( this->tabPosition () == QTabWidget::East ) || ( this->tabPosition () == QTabWidget::West ) ) {
+
+    this->minimunValue = this->tabBar ()->width () + 2;
+  }
+  this->collapsedAnimation->setEndValue ( this->minimunValue );
+  this->uncollapsedAnimation->setStartValue ( this->minimunValue );
 }
 
 void TabWidget::uncollapsed () {
@@ -496,39 +529,3 @@ void TabWidget::uncollapsedUnanimated () {
     this->setMaximumWidth ( 16777215 );
   }
 }
-
-/*bool TabWidget::getLockedTabWidget () const {
-
-  return this->lockedTabWidget;
-}
-
-bool TabWidget::getOpenTabWidget () const {
-
-  return this->openTabWidget;
-}
-
-int TabWidget::getPreviousHeight () const {
-
-  return this->previousHeight;
-}
-
-void TabWidget::setPreviousHeight ( int value ) {
-
-  this->previousHeight = value;
-}
-
-void TabWidget::setCornerWidget ( QWidget *widget, Qt::Corner corner ) {
-
-  QTabWidget::setCornerWidget ( widget, corner );
-  ( ( TabWidgetCorner * ) widget )->updateArrowType ();
-}
-
-void TabWidget::setLockedTabWidget ( bool value ) {
-
-  this->lockedTabWidget = value;
-}
-
-void TabWidget::setOpenTabWidget ( bool value ) {
-
-  this->openTabWidget = value;
-}*/

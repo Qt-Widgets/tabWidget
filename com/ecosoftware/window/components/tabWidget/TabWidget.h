@@ -56,19 +56,13 @@ namespace Com {
               };
               Q_ENUM ( CornerPosition )
 
-              /*bool getLockedTabWidget () const;
-    bool getOpenTabWidget () const;
-    int getPreviousHeight () const;
-    void setCornerWidget ( QWidget *widget, Qt::Corner corner = Qt::TopRightCorner );
-    void setLockedTabWidget ( bool value );
-    void setOpenTabWidget ( bool value );
-    void setPreviousHeight ( int value );*/
-
               void addActionCorner ( QAction *action, TabWidget::CornerPosition cornerPosition );
               TabWidget::CornerPosition getIndicatorPosition () const; // LISTO
               bool isAnimated () const; // LISTO
               bool isCollapsible () const; // LISTO
               bool isFloating () const;
+              bool isTabLocked () const; // LISTO
+              bool isTabOpened () const; // LISTO
               void setAnimated ( bool value );
               void setCollapsible ( bool value );
               void setDuration ( int msecs ); // LISTO
@@ -76,7 +70,6 @@ namespace Com {
               void setIndicatorPosition ( TabWidget::CornerPosition cornerPosition );
               void setFloating ( bool value );
               void setTabPosition ( QTabWidget::TabPosition tabPosition );
-              //void timerEvent ( QTimerEvent *timerEvent ) Q_DECL_OVERRIDE;
 
             public slots:
               void launchAnimation (); // LISTO
@@ -150,13 +143,13 @@ namespace Com {
               int minimunValue = 0;
               bool openTabWidget = true;
 
-
               void collapsed (); // LISTO
               void uncollapsed (); // LISTO
               void collapsedAnimated (); // LISTO
               void collapsedUnanimated (); // LISTO
               void uncollapsedAnimated (); // LISTO
               void uncollapsedUnanimated (); // LISTO
+              void removeShowHideBtn (); // LISTO
               void setAnimation ();
           };
         }
