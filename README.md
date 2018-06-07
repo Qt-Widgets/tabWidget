@@ -36,4 +36,4 @@ Por ahora solo funciona correctamente con TabPosition::North, para TabPosition::
 - [ ] Ajustar el comportamiento/animación del botón de la esquina de acuerdo a la posición de las pestañas Norte/Sur ( Adjust the behavior/animation of the corner button according to the position of the North/South tabs. ).
 - [ ] Permitir arrastrar y soltar pestañas y convertirlas en una ventana flotante ( Allow drag and drop tabs and turn them into a floating window ).
 - [ ] Permitir convertir pestañas y convertirlas en una ventana flotante la hacer docle click, este punto excluye al punto siguiente ( Allow to convert tabs and turn them into a floating window do click click, this point excludes the next point ).
-- [ ] Permitir colapsar/descolapsar las pestañas al hacer doble click, este punto excluye al punto anterior ( Allow collapsing/uncollapsing the tabs by double clicking, this point excludes the previous point ).
+- [x] Permitir colapsar/descolapsar las pestañas al hacer doble click, este punto excluye al punto anterior ( Allow collapsing/uncollapsing the tabs by double clicking, this point excludes the previous point ).
