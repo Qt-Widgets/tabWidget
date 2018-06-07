@@ -397,95 +397,63 @@ void TabWidget::setFloating ( bool value ) {
 void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
 
   qDebug () << "Está entrando al setIndicatorPosition";
-  if ( this->indicatorPosition != CornerPosition::None ) {
 
-    // TODO: Aquí obtener la acción indicadora expandir/contraer y reasignarla a la nueva posición indicada
-    QList<QToolButton *> allPButtons;
+  if ( this->isCollapsible () ) {
+
+    if ( this->indicatorPosition != CornerPosition::None ) {
+
+      QToolButton *toolButton;
+      QString objectNameBtn = "Com::Ecosoftware::Window::Components::TabWidget::ShowHideTabActBtn";
+      switch ( this->indicatorPosition ) {
+//908124
+        case TabWidget::Top:
+        case TabWidget::Left:
+
+          toolButton = this->cornerTopLeft->findChild<QToolButton *> ( objectNameBtn );
+          break;
+
+        case TabWidget::Bottom:
+        case TabWidget::Right:
+
+          toolButton = this->cornerBottomRight->findChild<QToolButton *> ( objectNameBtn );
+          break;
+
+        default:
+
+          toolButton = this->cornerBottomRight->findChild<QToolButton *> ( objectNameBtn );
+          break;
+      }
+      if ( toolButton != 0 ) {
+
+        qDebug () << "Si hay botones del lado SUPERIOR";
+      }
+
+
+    } else {
+
+      this->indicatorPosition = cornerPosition;
+      // TODO: Aquí se agrega la acción en la esquina indicada.
+    }
     switch ( cornerPosition ) {
 
-      case TabWidget::Top: {
-
-        // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
-        //this->setCornerWidget ( this->corner, cornerPosition );
-        allPButtons = this->cornerBottomRight->findChildren<QToolButton *> ();
-        break;
-      }
-      case TabWidget::Bottom: {
-
-        // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
-        //this->setCornerWidget ( this->corner, cornerPosition );
-        allPButtons = this->cornerTopLeft->findChildren<QToolButton *> ();
-        break;
-      }
+      case TabWidget::Top:
       case TabWidget::Left:
 
-        // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
-        //this->setCornerWidget ( this->corner, cornerPosition );
-        //this->cornerTopLeft->addAction ( this->showHideTabAct );
-        allPButtons = this->cornerBottomRight->findChildren<QToolButton *> ();
-        if ( allPButtons.count () > 0 ) {
-
-          qDebug () << "Si hay botones";
-        }
+        this->cornerTopLeft->addAction ( this->showHideTabAct );
         break;
 
+      case TabWidget::Bottom:
       case TabWidget::Right:
 
-        // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
-        //this->setCornerWidget ( this->corner, cornerPosition );
-        //this->cornerBottomRight->addAction ( this->showHideTabAct );
-        allPButtons = this->cornerTopLeft->findChildren<QToolButton *> ();
+        this->cornerBottomRight->addAction ( this->showHideTabAct );
         break;
 
       default:
 
-        // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
-        //this->setCornerWidget ( this->corner, cornerPosition );
+        this->cornerBottomRight->addAction ( this->showHideTabAct );
         break;
     }
   }
-  this->indicatorPosition = cornerPosition;
-
-  switch ( cornerPosition ) {
-
-    case TabWidget::Top: {
-
-      qDebug () << "Entrando por la línea 424";
-      // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
-      //this->setCornerWidget ( this->corner, cornerPosition );
-      break;
-    }
-    case TabWidget::Bottom: {
-
-      qDebug () << "Entrando por la línea 431";
-      // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
-      //this->setCornerWidget ( this->corner, cornerPosition );
-      break;
-    }
-    case TabWidget::Left:
-
-      qDebug () << "Entrando por la línea 438";
-      // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
-      //this->setCornerWidget ( this->corner, cornerPosition );
-      this->cornerTopLeft->addAction ( this->showHideTabAct );
-      break;
-
-    case TabWidget::Right:
-
-      qDebug () << "Entrando por la línea 446";
-      // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
-      //this->setCornerWidget ( this->corner, cornerPosition );
-      this->cornerBottomRight->addAction ( this->showHideTabAct );
-      break;
-
-    default:
-
-      qDebug () << "Entrando por la línea 453";
-      // TODO: Aquí se agrega la acción encontrada a la esquina indicada.
-      //this->setCornerWidget ( this->corner, cornerPosition );
-      break;
-  }
-  //this->setCornerWidget ( this->corner, cornerPosition );
 }
 
 void TabWidget::setTabPosition ( QTabWidget::TabPosition tabPosition ) {

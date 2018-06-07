@@ -41,7 +41,7 @@ namespace Com {
               void setCornerPosition ( const Qt::Corner &value );
 
             public slots:
-              void toggleShowHideTabWidgetBtn ( bool checked );
+              void onToggle ( bool checked );
 
             private:
               QToolButton *showHideTabWidgetBtn;

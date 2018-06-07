@@ -150,7 +150,7 @@ void CornerWidget::updateArrowDirection ( bool checked ) {
   }
 }
 
-void CornerWidget::toggleShowHideTabWidgetBtn ( bool checked ) {
+void CornerWidget::onToggle ( bool checked ) {
 
   this->updateArrowDirection ( checked );
 }
@@ -207,7 +207,7 @@ void CornerWidget::addAction ( QAction *action ) {
         toolBtn->setArrowType ( Qt::ArrowType::DownArrow );
         break;
     }
-    connect ( toolBtn, SIGNAL ( toggled ( bool ) ), this, SLOT ( toggleShowHideTabWidgetBtn ( bool ) ) );
+    connect ( toolBtn, SIGNAL ( toggled ( bool ) ), this, SLOT ( onToggle ( bool ) ) );
   }
   this->mainLayout->addWidget ( toolBtn );
 }

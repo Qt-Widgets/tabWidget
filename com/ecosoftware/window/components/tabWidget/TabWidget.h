@@ -123,7 +123,7 @@ namespace Com {
                * @brief indicatorPosition
                * Indica la posición de la acción showHideTabAct, puede ser Top, Bottom, Left, Right.
                */
-              TabWidget::CornerPosition indicatorPosition = TabWidget::Right;
+              TabWidget::CornerPosition indicatorPosition = TabWidget::None;
               /**
                * @brief showHideTabAct
                * Acción indicadora para expandir/contraer del QTabWidget.
