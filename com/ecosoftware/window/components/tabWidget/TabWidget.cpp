@@ -77,6 +77,47 @@ void TabWidget::addActionCorner ( QAction *action, TabWidget::CornerPosition cor
   }
 }
 
+int TabWidget::addTab ( QWidget *page, const QString &label ) {
+
+  //connect ( this->customTabBar, SIGNAL ( undockTab ( bool ) ), ( DockerWindow * ) page, SLOT ( undockedTab ( bool ) ) );
+  //connect ( this->customTabBar, SIGNAL ( undockTab ( bool ) ), ( DockerWindow * ) page, SLOT ( windowDocker () ) );
+  int index = QTabWidget::addTab ( page, label );
+  this->setTabToolTip ( index, label );
+  return index;
+}
+
+int TabWidget::addTab ( QWidget *page, const QIcon &icon, const QString &label ) {
+
+  //connect ( this->customTabBar, SIGNAL ( undockTab ( bool ) ), ( DockerWindow * ) page, SLOT ( undockedTab ( bool ) ) );
+  //connect ( this->customTabBar, SIGNAL ( undockTab ( bool ) ), ( DockerWindow * ) page, SLOT ( windowDocker () ) );
+  int index = 0;
+  switch ( this->tabFlag ) {
+
+    case TabWidget::IconNextText:
+    case TabWidget::IconOverText:
+
+      index = QTabWidget::addTab ( page, this->fixIcon ( icon ), label );
+      break;
+
+    case TabWidget::OnlyIcon:
+
+      index = QTabWidget::addTab ( page, this->fixIcon ( icon ), "" );
+      break;
+
+    case TabWidget::OnlyText:
+
+      index = QTabWidget::addTab ( page, label );
+      break;
+
+    default:
+
+      index = QTabWidget::addTab ( page, label );
+      break;
+  }
+  this->setTabToolTip ( index, label );
+  return index;
+}
+
 void TabWidget::collapsed () {
 
   if ( this->isAnimated () ) {
@@ -112,9 +153,40 @@ void TabWidget::collapsedUnanimated () {
   }
 }
 
+QIcon TabWidget::fixIcon ( const QIcon &icon ) {
+
+  // TODO: Como hacer para capturar el valor SIZE del QIcon sin forzarlo
+  QIcon auxIcon = icon;
+  QSize sz ( 16, 16 );
+  for ( int var = 0; var < auxIcon.availableSizes ().count (); ++var ) {
+
+    if ( auxIcon.availableSizes ().at ( var ).width () > sz.width () ) {
+
+      sz = auxIcon.availableSizes ().at ( var );
+    }
+  }
+  QPixmap pix = auxIcon.pixmap ( sz );
+  QTransform trans;
+  if ( this->tabPosition () == QTabWidget::East ) {
+
+    trans.rotate ( -90 );
+
+  } else if ( this->tabPosition () == QTabWidget::West ) {
+
+    trans.rotate ( +90 );
+  }
+  pix = pix.transformed ( trans );
+  return QIcon ( pix );
+}
+
 TabWidget::CornerPosition TabWidget::getIndicatorPosition () const {
 
   return this->indicatorPosition;
+}
+
+TabWidget::TabFlag TabWidget::getTabFlag () const {
+
+  return this->tabFlag;
 }
 
 bool TabWidget::isAnimated () const {
@@ -442,6 +514,7 @@ void TabWidget::setFloating ( bool value ) {
 
 void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
 
+    //Q_D(TabWidget);
   if ( this->isCollapsible () ) {
 
     if ( this->indicatorPosition != CornerPosition::None ) {
@@ -472,6 +545,11 @@ void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
         break;
     }
   }
+}
+
+void TabWidget::setTabFlag ( const TabWidget::TabFlag &value ) {
+
+  this->tabFlag = value;
 }
 
 void TabWidget::setTabPosition ( QTabWidget::TabPosition tabPosition ) {

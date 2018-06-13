@@ -1,7 +1,9 @@
 #include "MainWindow.h"
 #include <QDebug>
+#include <QIcon>
 #include <QSplitter>
 #include <QTextEdit>
+#include <QVBoxLayout>
 
 MainWindow::MainWindow ( QWidget *parent ) : QMainWindow ( parent ) {
 
@@ -15,12 +17,24 @@ MainWindow::MainWindow ( QWidget *parent ) : QMainWindow ( parent ) {
   //Com::Ecosoftware::Window::Components::TabWidget::TabWidget *collapsibleTabWidget = new Com::Ecosoftware::Window::Components::TabWidget::TabWidget ( true, true, QTabWidget::West, this );
   //Com::Ecosoftware::Window::Components::TabWidget::TabWidget *collapsibleTabWidget = new Com::Ecosoftware::Window::Components::TabWidget::TabWidget ( true, false, QTabWidget::West, this );
 
+  //collapsibleTabWidget->setTabFlag ( Com::Ecosoftware::Window::Components::TabWidget::TabWidget::IconNextText );
+  //collapsibleTabWidget->setTabFlag ( Com::Ecosoftware::Window::Components::TabWidget::TabWidget::IconOverText );
+  collapsibleTabWidget->setTabFlag ( Com::Ecosoftware::Window::Components::TabWidget::TabWidget::OnlyIcon );
+  //collapsibleTabWidget->setTabFlag ( Com::Ecosoftware::Window::Components::TabWidget::TabWidget::OnlyText );
+
   QWidget *prueba = new QWidget ( this );
   prueba->setStyleSheet ( "background-color: yellow" );
-  collapsibleTabWidget->addTab ( prueba, "Tab 1" );
-  collapsibleTabWidget->addTab ( new QWidget ( this ), "Tab 2" );
-  collapsibleTabWidget->addTab ( new QWidget ( this ), "Tab 3" );
-  collapsibleTabWidget->addTab ( new QWidget ( this ), "Tab 4" );
+  collapsibleTabWidget->addTab ( prueba, QIcon ( ":/icons/Back.svg" ), QString ( "Tab 1" ) );
+  prueba = new QWidget ( this );
+  prueba->setStyleSheet ( "background-color: blue" );
+  collapsibleTabWidget->addTab ( prueba, QIcon ( ":/icons/Arrow.svg" ), "Tab 2" );
+  prueba = new QWidget ( this );
+  prueba->setStyleSheet ( "background-color: red" );
+  collapsibleTabWidget->addTab ( prueba, QIcon ( ":/icons/arrow-down.svg" ), "Tab 3" );
+  prueba = new QWidget ( this );
+  prueba->setStyleSheet ( "background-color: brown" );
+  collapsibleTabWidget->addTab ( prueba, QIcon ( ":/icons/arrow-right.svg" ), "Tab 4" );
+
 
   //collapsibleTabWidget->setTabPosition ( QTabWidget::North );
   //collapsibleTabWidget->setTabPosition ( QTabWidget::South );

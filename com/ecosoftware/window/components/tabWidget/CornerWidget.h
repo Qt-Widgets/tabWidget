@@ -10,13 +10,14 @@
 #include <QAction>
 #include <QBoxLayout>
 #include <QHBoxLayout>
-/*#include <QMainWindow>
-#include <QParallelAnimationGroup>
-#include <QPropertyAnimation>*/
+#include <QList>
 #include <QTabWidget>
 #include <QToolButton>
 #include <QVBoxLayout>
 #include <QWidget>
+/*#include <QMainWindow>
+#include <QParallelAnimationGroup>
+#include <QPropertyAnimation>*/
 
 namespace Com {
 

@@ -10,12 +10,16 @@
 // Librerías Qt
 #include <QAction>
 #include <QEvent>
+#include <QIcon>
 #include <QMouseEvent>
+#include <QPixmap>
 #include <QPropertyAnimation>
 #include <QResizeEvent>
 #include <QShowEvent>
+#include <QSize>
 #include <QTabBar>
 #include <QTabWidget>
+#include <QTransform>
 #include <QToolButton>
 /*
 #include <QFlags>
@@ -28,6 +32,7 @@
 */
 
 class CornerWidget;
+//class CustomTabBar;
 
 namespace Com {
 
@@ -56,8 +61,20 @@ namespace Com {
               };
               Q_ENUM ( CornerPosition )
 
+              enum TabFlag {
+
+                IconNextText = 0,
+                IconOverText,
+                OnlyIcon,
+                OnlyText
+              };
+              Q_ENUM ( TabFlag )
+
               void addActionCorner ( QAction *action, TabWidget::CornerPosition cornerPosition );
+              int	addTab ( QWidget *page, const QString &label );
+              int addTab ( QWidget *page, const QIcon &icon, const QString &label );
               TabWidget::CornerPosition getIndicatorPosition () const; // LISTO
+              TabWidget::TabFlag getTabFlag () const;
               bool isAnimated () const; // LISTO
               bool isCollapsible () const; // LISTO
               bool isFloating () const;
@@ -67,9 +84,11 @@ namespace Com {
               void setCollapsible ( bool value );
               void setDuration ( int msecs ); // LISTO
               void setEasingCurve ( const QEasingCurve &easing ); // LISTO
-              void setIndicatorPosition ( TabWidget::CornerPosition cornerPosition );
               void setFloating ( bool value );
+              void setIndicatorPosition ( TabWidget::CornerPosition cornerPosition );
+              void setTabFlag ( const TabWidget::TabFlag &value );
               void setTabPosition ( QTabWidget::TabPosition tabPosition );
+
 
             public slots:
               void launchAnimation (); // LISTO
@@ -88,9 +107,6 @@ namespace Com {
               void onStoppedAnimation (); // LISTO
 
             private:
-              /*
-    int timerId;
-    bool finishedAnimation = false;*/
               /**
                * @brief cornerTopLeft
                * Esquina izquierda/superior del QTabWidget para las posiciones North/West del QTabBar
@@ -142,15 +158,17 @@ namespace Com {
               int previousIndex = 0;
               int minimunValue = 0;
               bool openTabWidget = true;
+              TabWidget::TabFlag tabFlag = TabWidget::IconNextText;
 
               void collapsed (); // LISTO
-              void uncollapsed (); // LISTO
               void collapsedAnimated (); // LISTO
               void collapsedUnanimated (); // LISTO
-              void uncollapsedAnimated (); // LISTO
-              void uncollapsedUnanimated (); // LISTO
+              QIcon fixIcon ( const QIcon &icon );
               void removeShowHideBtn (); // LISTO
               void setAnimation ();
+              void uncollapsed (); // LISTO
+              void uncollapsedAnimated (); // LISTO
+              void uncollapsedUnanimated (); // LISTO
           };
         }
       }

@@ -29,15 +29,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
   TabWidget.cpp \
   ShowHideTabAct.cpp \
-    TabBar.cpp \
-    CornerWidget.cpp
+    CornerWidget.cpp \
+    TabBar.cpp
 
 HEADERS += \
   TabWidget_global.h \
   TabWidget.h \
   ShowHideTabAct.h \
-    TabBar.h \
-    CornerWidget.h
+    CornerWidget.h \
+    TabBar.h
 
 DESTDIR = ../
 

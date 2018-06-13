@@ -167,6 +167,10 @@ void CornerWidget::setCornerPosition ( const Qt::Corner &value ) {
 
 void CornerWidget::addAction ( QAction *action ) {
 
+  // TODO: Agregar y reorganizar las acciones de acuerdo a la posición
+  // si se agregan acciones del lado derecho, las acciones deben ir antes del indicador de bloqueo de pestañas si este último está activo
+  // si se agregan acciones del lado izquierdo, las acciones deben ir después del indicador de bloqueo de pestañas si este último está activo
+  // si hay acciones y no está activo el indicador y este se activa después, reordenar en el caso que corresponda
   QToolButton *toolBtn = new QToolButton ( this );
   toolBtn->setDefaultAction ( action );
   toolBtn->setObjectName ( action->objectName () + "Btn" );
@@ -209,5 +213,135 @@ void CornerWidget::addAction ( QAction *action ) {
     }
     connect ( toolBtn, SIGNAL ( toggled ( bool ) ), this, SLOT ( onToggle ( bool ) ) );
   }
-  this->mainLayout->addWidget ( toolBtn );
+  QString objectNameBtn = "Com::Ecosoftware::Window::Components::TabWidget::ShowHideTabActBtn";
+  QToolButton *showHideToolBtn = this->findChild<QToolButton *> ( objectNameBtn );
+  if ( showHideToolBtn != 0 ) { // Si existe el indicador de bloqueo de pestañas
+
+    switch ( this->cornerPosition ) {
+
+      case Qt::Corner::TopLeftCorner:
+
+        this->mainLayout->addWidget ( toolBtn );
+        break;
+
+      case Qt::Corner::TopRightCorner: {
+
+        if ( !( this->tabPosition == QTabWidget::East ) || !( this->tabPosition == QTabWidget::West ) ) {
+
+          QList<QToolButton *> allPBtns = this->findChildren<QToolButton *> ();
+          if ( allPBtns.count () > 0 ) {
+
+            for ( int i = 0; i < allPBtns.count (); i++ ) {
+
+
+              this->mainLayout->removeWidget ( allPBtns.at ( i ) );
+            }
+            for ( int i = 0; i < allPBtns.count () - 1; i++ ) {
+
+
+              this->mainLayout->addWidget ( allPBtns.at ( i ) );
+            }
+            this->mainLayout->addWidget ( toolBtn );
+            this->mainLayout->addWidget ( allPBtns.at ( allPBtns.count () - 1 ) );
+
+          } else {
+
+            this->mainLayout->addWidget ( toolBtn );
+          }
+        } else {
+
+          this->mainLayout->addWidget ( toolBtn );
+        }
+        break;
+      }
+      case Qt::Corner::BottomLeftCorner:
+
+        // TODO: Falta ajustar esta esquina
+        break;
+
+      case Qt::Corner::BottomRightCorner:
+
+        // TODO: Falta ajustar esta esquina
+        break;
+
+      default:
+
+        // TODO: Falta ajustar esquina predeterminada
+        break;
+    }
+  } else { // Si no existe el indicador de bloqueo de pestañas
+
+    if ( toolBtn->objectName ().compare ( objectNameBtn ) ) {
+
+      // TODO: Aquí hay que verificar si el boton a insertar es el indicador
+      // para reordenar las acciones según corresponda el caso.
+      switch ( this->cornerPosition ) {
+
+        case Qt::Corner::TopLeftCorner: {
+
+          QList<QToolButton *> allPBtns = this->findChildren<QToolButton *> ();
+          if ( allPBtns.count () > 0 ) {
+
+            for ( int i = 0; i < allPBtns.count (); i++ ) {
+
+
+              this->mainLayout->removeWidget ( allPBtns.at ( i ) );
+            }
+            this->mainLayout->addWidget ( toolBtn );
+            for ( int i = 0; i < allPBtns.count (); i++ ) {
+
+
+              this->mainLayout->addWidget ( allPBtns.at ( i ) );
+            }
+
+          } else {
+
+            this->mainLayout->addWidget ( toolBtn );
+          }
+          break;
+
+        case Qt::Corner::TopRightCorner: {
+
+          /*QList<QToolButton *> allPBtns = this->findChildren<QToolButton *> ();
+          if ( allPBtns.count () > 0 ) {
+
+            for ( int i = 0; i < allPBtns.count (); i++ ) {
+
+
+              this->mainLayout->removeWidget ( allPBtns.at ( i ) );
+            }
+            for ( int i = 0; i < allPBtns.count () - 1; i++ ) {
+
+
+              this->mainLayout->addWidget ( allPBtns.at ( i ) );
+            }
+            this->mainLayout->addWidget ( toolBtn );
+            this->mainLayout->addWidget ( allPBtns.at ( allPBtns.count () - 1 ) );
+
+          } else {
+
+            this->mainLayout->addWidget ( toolBtn );
+          }*/
+          break;
+        }
+        case Qt::Corner::BottomLeftCorner:
+
+          // TODO: Falta ajustar esta esquina
+          break;
+
+        case Qt::Corner::BottomRightCorner:
+
+          // TODO: Falta ajustar esta esquina
+          break;
+
+        default:
+
+          // TODO: Falta ajustar esquina predeterminada
+          break;
+      }
+    } else {
+
+      this->mainLayout->addWidget ( toolBtn );
+    }
+  }
 }

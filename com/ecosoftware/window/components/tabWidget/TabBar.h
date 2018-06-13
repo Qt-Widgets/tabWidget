@@ -6,7 +6,12 @@
 
 // Librerías Qt
 #include <QMouseEvent>
+#include <QPaintEvent>
+#include <QSize>
+#include <QStyleOptionTabV2>
+#include <QStylePainter>
 #include <QTabBar>
+#include <QTabWidget>
 
 namespace Com {
 
@@ -24,6 +29,8 @@ namespace Com {
 
             public:
               explicit TabBar ( QWidget *parent = 0 );
+
+              void	paintEvent ( QPaintEvent *paintEvent ) Q_DECL_OVERRIDE;
 
             signals:
               void onDobleClick ();

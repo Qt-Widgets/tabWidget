@@ -50,3 +50,6 @@ INCLUDEPATH += \
 DEPENDPATH += \
   $$PWD/../../com/ecosoftware/window/components/actions \
   $$PWD/../../com/ecosoftware/window/components/tabWidget
+
+RESOURCES += \
+    iconsresource.qrc
