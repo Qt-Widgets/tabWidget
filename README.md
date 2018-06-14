@@ -25,7 +25,7 @@ Por ahora solo funciona correctamente con TabPosition::North, para TabPosition::
 - [ ] Permite desacoplar la pestaña, convirtiendola en una ventana flotante en las diferentes modalidades de ventanas permitidas por Qt y una nueva presentación personalizada mediante D&D ( It allows decoupling the tab, converting it into a floating window in the different modalities of windows allowed by Qt and a new personalized presentation through D&D ).
 - [ ] Permite acoplar la ventana flotante nuevamente a una pestaña ( It allows you to dock the floating window back to a tab ).
 - [ ] Permite D&D entre otros TabWidget ( Allows D&D among others TabWidget ).
-- [ ] Permite agregar acciones en las esquinas izquierda/derecha ( It allows adding actions in the left/right corners ).
+- [x] Permite agregar acciones en las esquinas izquierda/derecha ( It allows adding actions in the left/right corners ).
 - [ ] Se espera pueda permitir agregar acciones en las esquinas superior/inferior para posiciones verticales ( It is expected that you can allow adding actions in the upper/lower corners for vertical positions ).
 - [x] La animación necesita ser ajustada después que las dimensiones del QTabWidget han sido modificadas (The animation needs to be adjusted after the dimensions of the QTabWidget have been modified).
 - [ ] Adaptar el código para poder ser utilizado desde QtDesigner (Adapt the code to be used from QtDesigner).
