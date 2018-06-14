@@ -3,10 +3,8 @@
 
 // Librerias Internas
 #include "TabWidget_global.h"
-//#include "TabWidget.h"
 
 // Librerías Qt
-/*#include <QAbstractAnimation>*/
 #include <QAction>
 #include <QBoxLayout>
 #include <QHBoxLayout>
@@ -15,9 +13,6 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 #include <QWidget>
-/*#include <QMainWindow>
-#include <QParallelAnimationGroup>
-#include <QPropertyAnimation>*/
 
 namespace Com {
 
@@ -38,18 +33,21 @@ namespace Com {
 
               void addAction ( QAction *action );
               Qt::Corner getCornerPosition () const;
-              void updateArrowDirection ( bool checked );
+              void removeToolbutton ( QAction *action );
               void setCornerPosition ( const Qt::Corner &value );
+              void updateArrowDirection ( bool checked );
 
             public slots:
               void onToggle ( bool checked );
 
             private:
-              QToolButton *showHideTabWidgetBtn;
-              QBoxLayout *mainLayout;
-              Qt::Corner cornerPosition;
-              QTabWidget::TabPosition tabPosition;
+                           Qt::Corner  cornerPosition;
+                           QBoxLayout *mainLayout;
+                          QToolButton *showHideTabWidgetBtn;
+              QTabWidget::TabPosition  tabPosition;
 
+              void reorderButtonsCornerWithoutShowHideToolBtn ( QToolButton *toolBtn );
+              void reorderButtonsCornerWithShowHideToolBtn ( QToolButton *toolBtn );
           };
         }
       }
