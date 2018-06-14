@@ -10,8 +10,7 @@ void TabBar::paintEvent ( QPaintEvent *paintEvent ) {
 
   // TODO: Como redibujar los bordes de la pestaña.
   // TODO: Como redibujar el indicador de la pestaña activa.
-  // TODO: Como ajustar el espaciado entre los bordes superio, inferior,
-  // izquierda, derecha y entre el icono y el texto.
+  // TODO: Como ajustar el espaciado entre los bordes superio, inferior, izquierda, derecha y entre el icono y el texto.
   TabWidget *tabWidget = ( TabWidget * ) this->parentWidget ();
 
   switch ( tabWidget->getTabFlag () ) {

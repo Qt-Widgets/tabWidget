@@ -514,7 +514,6 @@ void TabWidget::setFloating ( bool value ) {
 
 void TabWidget::setIndicatorPosition ( CornerPosition cornerPosition ) {
 
-    //Q_D(TabWidget);
   if ( this->isCollapsible () ) {
 
     if ( this->indicatorPosition != CornerPosition::None ) {

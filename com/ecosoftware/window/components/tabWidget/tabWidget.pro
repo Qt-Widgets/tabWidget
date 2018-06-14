@@ -30,14 +30,18 @@ SOURCES += \
   TabWidget.cpp \
   ShowHideTabAct.cpp \
     CornerWidget.cpp \
-    TabBar.cpp
+    TabBar.cpp \
+    FloatingTab.cpp \
+    TitlieBarFloatingTab.cpp
 
 HEADERS += \
   TabWidget_global.h \
   TabWidget.h \
   ShowHideTabAct.h \
     CornerWidget.h \
-    TabBar.h
+    TabBar.h \
+    FloatingTab.h \
+    TitlieBarFloatingTab.h
 
 DESTDIR = ../
 
